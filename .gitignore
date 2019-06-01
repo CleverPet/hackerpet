@@ -1,0 +1,4 @@
+*.swp
+
+#ignore compiled firmware binaries
+*.bin
