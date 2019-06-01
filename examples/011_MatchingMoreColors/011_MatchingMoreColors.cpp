@@ -289,6 +289,8 @@ bool playMatchingMoreColors(){
 
     updateTouchpadLights();
 
+    hub.SetButtonAudioEnabled(true);
+
     // Record start timestamp for performance logging
     timestamp_before = millis();
 
@@ -395,7 +397,9 @@ bool playMatchingMoreColors(){
             hub.PlayAudio(hub.AUDIO_NEGATIVE, 80);
             // give the Hub a moment to finish playing the reward sound
             yield_sleep_ms(SOUND_FOODTREAT_DELAY, false);
-
+            // turn off touchpads sound and light during time-out
+            hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0);
+            hub.SetButtonAudioEnabled(false);
             yield_sleep_ms(WRONG_INTERACTION_DELAY, false);
         }
     }
