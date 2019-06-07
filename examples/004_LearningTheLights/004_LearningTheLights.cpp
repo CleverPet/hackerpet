@@ -149,7 +149,7 @@ String convertBitfieldToLetter(unsigned char pad){
 bool playLearningTheLights() {
   yield_begin();
 
-  static unsigned long timestamp_before, activityDuration, time_start_wait = 0;
+  static unsigned long timestampBefore, activityDuration, timestampTouchpad = 0;
   static int foodtreatState = 99;
   static unsigned long gameStartTime = 0; // store the interaction start time for report
   static int yellow = 60; // touchpad color, is randomized
@@ -159,12 +159,13 @@ bool playLearningTheLights() {
   static bool accurate = false;
   static bool timeout = false;
   static bool foodtreatWasEaten = false; // store if foodtreat was eaten
+  static bool challengeComplete = false; // do not re-initialize
 
   // Static variables and constants are only initialized once, and need to be re-initialized
   // on subsequent calls
-  timestamp_before = 0;
+  timestampBefore = 0;
   activityDuration =0;
-  time_start_wait = 0;
+  timestampTouchpad = 0;
   foodtreatState = 99;
   gameStartTime = 0; // store the interaction start time for report
   yellow = 60; // touchpad color, is randomized
@@ -196,7 +197,7 @@ bool playLearningTheLights() {
   hub.SetDIResetLock(true);
 
   // Record start timestamp for performance logging
-  timestamp_before = millis();
+  timestampBefore = millis();
 
   yellow = random(20, 90); // pick a yellow for interaction
   blue = random(20, 90);    // pick a blue for interaction
@@ -212,7 +213,7 @@ bool playLearningTheLights() {
   }
 
   // progress to next state
-  time_start_wait = millis();
+  timestampTouchpad = millis();
 
   do {
     // detect any touchpads currently pressed
@@ -221,10 +222,10 @@ bool playLearningTheLights() {
     yield(false);
   } while ((pressed != hub.BUTTON_LEFT // we want just a single touchpad
             && pressed != hub.BUTTON_MIDDLE && pressed != hub.BUTTON_RIGHT) &&
-           millis() < time_start_wait + TIMEOUT_MS);
+           millis() < timestampTouchpad + TIMEOUT_MS);
 
   // record time period for performance logging
-  activityDuration = millis() - timestamp_before;
+  activityDuration = millis() - timestampBefore;
 
   hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off lights
 
@@ -288,7 +289,7 @@ bool playLearningTheLights() {
     addResultToPerformanceHistory(accurate);
     if (countSuccesses() >= ENOUGH_SUCCESSES) {
       Log.info("At MAX level! %u", currentLevel);
-      // TODO At MAX level CHALLENGE DONE
+      challengeComplete = true;
       resetPerformanceHistory();
     }
   } else {
@@ -311,8 +312,10 @@ bool playLearningTheLights() {
     extra += convertBitfieldToLetter(target);
     extra += "\",\"pressed\":\"";
     extra += convertBitfieldToLetter(pressed);
-    extra += String::format("\",\"retryGame\":\"%c\"}", retryTarget ? '1' : '0');
-
+    extra += String::format("\",\"retryGame\":\"%c\"", retryTarget ? '1' : '0');
+    if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+    extra += "}";
+    
     hub.Report(Time.format(gameStartTime,
                            TIME_FORMAT_ISO8601_FULL), // play_start_time
                PlayerName,                            // player

@@ -196,7 +196,7 @@ String convertBitfieldToSingleLetter(unsigned char targetPad, unsigned char pad)
 bool playRespondingQuickly() {
   yield_begin();
 
-  static unsigned long gameStartTime, time_start_wait, timestamp_before, activityDuration = 0;
+  static unsigned long gameStartTime, timestampTouchpad, timestampBefore, activityDuration = 0;
   static unsigned char foodtreatState = 99;
   static unsigned char touchpads[3] = { hub.BUTTON_LEFT,  // should not be re-initialized
                                         hub.BUTTON_MIDDLE,
@@ -206,12 +206,13 @@ bool playRespondingQuickly() {
   static bool timeout = false;
   static unsigned char pressed[2] = {0, 0};
   static bool foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
+  static bool challengeComplete = false; // do not re-initialize
 
   // Static variables and constants are only initialized once, and need to be re-initialized
   // on subsequent calls
    gameStartTime = 0;
-   time_start_wait = 0;
-   timestamp_before = 0;
+   timestampTouchpad = 0;
+   timestampBefore = 0;
    activityDuration = 0;
    foodtreatState = 99;
    accurate = false;
@@ -242,7 +243,7 @@ bool playRespondingQuickly() {
   hub.SetDIResetLock(true);
 
   // Record start timestamp for performance logging
-  timestamp_before = millis();
+  timestampBefore = millis();
 
   if (retryTarget) {
     Log.info("We're doing a retry interaction");
@@ -254,7 +255,7 @@ bool playRespondingQuickly() {
   hub.SetLights(touchpads[0], YELLOW, BLUE, SLEW);
 
   // progress to next state
-  time_start_wait = millis();
+  timestampTouchpad = millis();
 
   do {
     // detect any touchpads currently pressed
@@ -262,7 +263,7 @@ bool playRespondingQuickly() {
     yield(false);
     // Ignore non-target touches
   } while (!(pressed[0] & touchpads[0]) // 0 if any pressed touchpad match
-           && millis() < time_start_wait + TIMEOUT_MS); // 0 if timed out
+           && millis() < timestampTouchpad + TIMEOUT_MS); // 0 if timed out
 
   hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off lights
 
@@ -282,7 +283,7 @@ bool playRespondingQuickly() {
     yield_sleep_ms(VIEW_WINDOW, false);
 
     // progress to next state
-    time_start_wait = millis();
+    timestampTouchpad = millis();
 
     do {
       // detect any touchpads currently pressed
@@ -292,7 +293,7 @@ bool playRespondingQuickly() {
     } while (       // 0 if any touchpad except interaction1 pad is touched
         !(pressed[1] & (touchpads[1] | touchpads[2])) &&
         // 0 if timed out
-        millis() < time_start_wait + MAX_REACTION_TIME[currentLevel - 1]);
+        millis() < timestampTouchpad + MAX_REACTION_TIME[currentLevel - 1]);
 
     hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off lights
 
@@ -341,7 +342,7 @@ bool playRespondingQuickly() {
   }
 
   // record time period for performance logging
-  activityDuration = millis() - timestamp_before;
+  activityDuration = millis() - timestampBefore;
 
   if (!timeout) {
     addResultToPerformanceHistory(accurate);
@@ -351,7 +352,7 @@ bool playRespondingQuickly() {
   if (currentLevel == MAX_LEVEL) {
     if (countSuccesses() >= ENOUGH_SUCCESSES) {
       Log.info("At MAX level! %u", currentLevel);
-      // TODO At MAX level CHALLENGE DONE
+      challengeComplete = true;
       resetPerformanceHistory();
     }
   } else {
@@ -384,7 +385,9 @@ bool playRespondingQuickly() {
     extra += convertBitfieldToLetter(touchpads[0]);
     // multiple touches possible, only report a single wrong one if a miss
     extra += convertBitfieldToSingleLetter(touchpads[1],pressed[1]);
-    extra += String::format("\",\"retryGame\":\"%c\"}", retryTarget ? '1' : '0');
+    extra += String::format("\",\"retryGame\":\"%c\"", retryTarget ? '1' : '0');
+    if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+    extra += "}";
 
     hub.Report(Time.format(gameStartTime,
                            TIME_FORMAT_ISO8601_FULL),  // play_start_time

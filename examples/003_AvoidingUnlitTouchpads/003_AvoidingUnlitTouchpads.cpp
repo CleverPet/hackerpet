@@ -156,27 +156,28 @@ String convertBitfieldToLetter(unsigned char pad){
 bool playAvoidingUnlitTouchpads() {
   yield_begin();
 
-  static unsigned long gameStartTime, timestamp_before, activityDuration = 0;
+  static unsigned long gameStartTime, timestampBefore, activityDuration = 0;
   static unsigned char target = 0; // bitfield, holds target touchpad
   static unsigned char  retryTarget = 0; // should not be re-initialized
   static int foodfoodtreatState = 99;
   static unsigned char pressed = 0; // bitfield, holds pressed touchpad
-  static unsigned long time_start_wait = 0;
+  static unsigned long timestampTouchpad = 0;
   static bool foodtreatWasEaten = false; // store if foodtreat was eaten
   static bool accurate = false;
   static bool timeout = false;
+  static bool challengeComplete = false; // do not re-initialize
   static int yellow = 60; // touchpad color, is randomized
   static int blue = 60; // touchpad color, is randomized
 
   // Static variables and constants are only initialized once, and need to be re-initialized
   // on subsequent calls
   gameStartTime = 0;
-  timestamp_before = 0;
+  timestampBefore = 0;
   activityDuration = 0;
   target = 0; // bitfield, holds target touchpad
   foodfoodtreatState = 99;
   pressed = 0; // bitfield, holds pressed touchpad
-  time_start_wait = 0;
+  timestampTouchpad = 0;
   foodtreatWasEaten = false; // store if foodtreat was eaten
   accurate = false;
   timeout = false;
@@ -205,7 +206,7 @@ bool playAvoidingUnlitTouchpads() {
   hub.SetDIResetLock(true);
 
   // Record start timestamp for performance logging
-  timestamp_before = millis();
+  timestampBefore = millis();
 
   yellow = random(20, 90); // pick a yellow for interaction
   blue = random(20.90);    // pick a blue for interaction
@@ -221,20 +222,19 @@ bool playAvoidingUnlitTouchpads() {
   }
 
   // progress to next state
-  time_start_wait = millis();
+  timestampTouchpad = millis();
 
   do {
     // detect any touchpads currently pressed
     pressed = hub.AnyButtonPressed();
-    yield(
-        false); // use yields statements any time the hub is pausing or waiting
+    yield(false); // use yields statements any time the hub is pausing or waiting
   } while (
       (pressed != hub.BUTTON_LEFT // we want it to just be a single touchpad
        && pressed != hub.BUTTON_MIDDLE && pressed != hub.BUTTON_RIGHT) &&
-      millis() < time_start_wait + TIMEOUT_MS);
+      millis() < timestampTouchpad + TIMEOUT_MS);
 
   // record time period for performance logging
-  activityDuration = millis() - timestamp_before;
+  activityDuration = millis() - timestampBefore;
 
   hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off lights
 
@@ -296,7 +296,7 @@ bool playAvoidingUnlitTouchpads() {
     addResultToPerformanceHistory(accurate);
     if (countSuccesses() >= ENOUGH_SUCCESSES) {
       Log.info("At MAX level! %u", currentLevel);
-      // TODO At MAX level CHALLENGE DONE
+      challengeComplete = true;
       resetPerformanceHistory();
     }
   } else {
@@ -319,7 +319,9 @@ bool playAvoidingUnlitTouchpads() {
     extra += convertBitfieldToLetter(target);
     extra += "\",\"pressed\":\"";
     extra += convertBitfieldToLetter(pressed);
-    extra += String::format("\",\"retryGame\":\"%c\"}", retryTarget ? '1' : '0');
+    extra += String::format("\",\"retryGame\":\"%c\"", retryTarget ? '1' : '0');
+    if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+    extra += "}";
 
     hub.Report(Time.format(gameStartTime,
                            TIME_FORMAT_ISO8601_FULL), // play_start_time

@@ -147,10 +147,11 @@ void printPerformanceArray() {
 bool playEngagingConsistently() {
   yield_begin();
 
-  static unsigned long gameStartTime, timestamp_before, reaction_time = 0;
+  static unsigned long gameStartTime, timestampBefore, reactionTime = 0;
   static unsigned char foodtreatState = 99;
   static bool foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
   static bool timeout = false;
+  static bool challengeComplete = false; // do not re-initialize
   static int tray_duration = 6000;
   static int timeout_duration = 300000; // 5 mins
   static unsigned char pressed = 0;     // to hold the pressed touchpad
@@ -158,8 +159,8 @@ bool playEngagingConsistently() {
   // Static variables and constants are only initialized once, and need to be re-initialized
   // on subsequent calls
   gameStartTime = 0;
-  timestamp_before = 0;
-  reaction_time = 0;
+  timestampBefore = 0;
+  reactionTime = 0;
   foodtreatState = 99;
   foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
   timeout = false;
@@ -189,7 +190,7 @@ bool playEngagingConsistently() {
   hub.SetDIResetLock(true);
 
   // Record start timestamp for performance logging
-  timestamp_before = millis();
+  timestampBefore = millis();
 
   // Turn on touchpad lights
   hub.SetRandomButtonLights(3, YELLOW, BLUE, FLASHING, FLASHING_DUTY_CYCLE);
@@ -200,10 +201,10 @@ bool playEngagingConsistently() {
     yield(false);
   } while ((pressed != hub.BUTTON_LEFT && pressed != hub.BUTTON_MIDDLE &&
             pressed != hub.BUTTON_RIGHT) &&
-           millis() < (timestamp_before + timeout_duration));
+           millis() < (timestampBefore + timeout_duration));
 
   // Record time period for performance logging
-  reaction_time = millis() - timestamp_before;
+  reactionTime = millis() - timestampBefore;
 
   // Turn off lights
   hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0);
@@ -241,28 +242,12 @@ bool playEngagingConsistently() {
     }
   }
 
-  // Send report
-  Log.info("Sending report");
-  String extra = String::format(
-      "{\"pos_tries\":%u,\"neg_tries\":%u}", countSuccesses(),
-      countMisses()); // TODO these are the current values, need new values
-  hub.Report(
-      Time.format(gameStartTime, TIME_FORMAT_ISO8601_FULL), // play_start_time
-      PlayerName,                                            // player
-      currentLevel,                                          // level
-      String(foodtreatWasEaten),                            // result
-      reaction_time, // duration -> linked to level and includes tray movement
-      1,             // foodtreat_presented
-      foodtreatWasEaten, // foodtreatWasEaten
-      extra                // extra field
-  );
-
   // Check if we're ready for next challenge
   if (currentLevel == MAX_LEVEL) {
     addResultToPerformanceHistory(foodtreatWasEaten);
     if (countSuccesses() >= ENOUGH_SUCCESSES) {
       Log.info("At MAX level! %u", currentLevel);
-      // TODO At MAX level CHALLENGE DONE
+      challengeComplete = true;
       resetPerformanceHistory();
     }
   } else {
@@ -286,6 +271,24 @@ bool playEngagingConsistently() {
       reset_challenge_timer = true;
     }
   }
+
+  // Send report
+  Log.info("Sending report");
+  String extra = String::format(
+      "{\"pos_tries\":%u,\"neg_tries\":%u", countSuccesses(), countMisses());
+  if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+  extra += "}";
+
+  hub.Report(
+      Time.format(gameStartTime, TIME_FORMAT_ISO8601_FULL), // play_start_time
+      PlayerName,                                           // player
+      currentLevel,                                         // level //TODO is this the correct level?
+      String(foodtreatWasEaten),                            // result
+      reactionTime, // duration -> linked to level and includes tray movement
+      1,             // foodtreat_presented
+      foodtreatWasEaten, // foodtreatWasEaten
+      extra                // extra field
+  );
 
   // printPerformanceArray();
 
