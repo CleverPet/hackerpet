@@ -18,7 +18,7 @@ This package shows you how to access the CleverPet Hub's HubInterface class, let
 
 [![Getting started](https://i.imgur.com/GqaLF30.png)](https://vimeo.com/335536434/6d25cf8962)
 
-1. Pick up a [Particle Photon](https://store.particle.io/products/photon)
+1. Pick up a [Particle Photon](https://store.particle.io/products/photon?variant=9097143491) (with headers) or [Amazon](https://www.amazon.com/dp/B016YNU1A0/)
 2. Configure your Photon using Particle's [Tinker app](https://docs.particle.io/tutorials/developer-tools/tinker/core/), then [swap your own Photon for the one that's in your Hub](VIDEO_GOES_HERE). Note: *only* Hubs with serial numbers that start with an 'H' have a Photon in them.
 3. Sign in on the [Particle website](https://login.particle.io/login), go to the [Particle build platform](https://build.particle.io) and load up the [CleverPet library](https://build.particle.io/libs/hackerpet/). Click on an example, hit the lightning bolt, and BOOM! you've now got a customized CleverPet Hub!
 
