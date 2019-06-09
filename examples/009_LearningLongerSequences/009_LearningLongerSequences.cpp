@@ -438,7 +438,7 @@ bool playLearningLongerSequences(){
             extra += convertBitfieldToSingleLetter(touchpad_sequence[i],pressed[i+1]);
         }
         extra += String::format("\",\"lives\":%d",lives);
-        if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
         extra += "}";
 
         // Log.info(extra);

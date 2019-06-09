@@ -240,7 +240,7 @@ bool playExploringTheTouchpads() {
     Log.info("Sending report");
 
     String extra = "{";
-    if (challengeComplete) {extra += ",\"challengeComplete\":1";}; //TODO this comes one game too late
+    if (challengeComplete) {extra += ",\"challengeComplete\":1";} //TODO this comes one game too late
     extra += "}";
 
     hub.Report(

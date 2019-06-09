@@ -276,7 +276,7 @@ bool playEngagingConsistently() {
   Log.info("Sending report");
   String extra = String::format(
       "{\"pos_tries\":%u,\"neg_tries\":%u", countSuccesses(), countMisses());
-  if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+  if (challengeComplete) {extra += ",\"challengeComplete\":1";}
   extra += "}";
 
   hub.Report(

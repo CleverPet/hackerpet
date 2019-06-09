@@ -421,7 +421,7 @@ bool playMatchingTwoColors(){
             REPORT_COLORS[touchpadsColorStart[2]], pressedSeq.c_str(),
             pads_pressed,
             retryGame ? '1' : '0');  // TODO this is the new value
-        if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
         extra += "}";
 
         // Log.info(extra);

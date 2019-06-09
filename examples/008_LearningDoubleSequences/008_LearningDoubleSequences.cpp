@@ -399,7 +399,7 @@ bool playLearningDoubleSequences(){
             extra += convertBitfieldToSingleLetter(touchpad_sequence[i],pressed[i+1]);
         }
         extra += "\"";
-        if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
         extra += "}";
 
         // Log.info(extra);

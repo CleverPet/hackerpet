@@ -386,7 +386,7 @@ bool playRespondingQuickly() {
     // multiple touches possible, only report a single wrong one if a miss
     extra += convertBitfieldToSingleLetter(touchpads[1],pressed[1]);
     extra += String::format("\",\"retryGame\":\"%c\"", retryTarget ? '1' : '0');
-    if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+    if (challengeComplete) {extra += ",\"challengeComplete\":1";}
     extra += "}";
 
     hub.Report(Time.format(gameStartTime,

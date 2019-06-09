@@ -317,7 +317,7 @@ bool playMasteringTheLights() {
     extra += "\",\"pressed\":\"";
     extra += convertBitfieldToLetter(pressed);
     extra += String::format("\",\"retryGame\":\"%c\"", retryTarget ? '1' : '0');
-    if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+    if (challengeComplete) {extra += ",\"challengeComplete\":1";}
     extra += "}";
 
     hub.Report(Time.format(gameStartTime,

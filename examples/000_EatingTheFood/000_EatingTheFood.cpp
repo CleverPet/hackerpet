@@ -144,7 +144,7 @@ bool playEatingTheFood() {
   Log.info("Sending report");
   
   String extra = "{";
-  if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+  if (challengeComplete) {extra += ",\"challengeComplete\":1";}
   extra += "}";
 
   hub.Report(

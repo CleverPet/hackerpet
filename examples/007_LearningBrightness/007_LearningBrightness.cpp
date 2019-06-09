@@ -426,7 +426,7 @@ discarding performance.");
         extra += String::format(
             "\",\"distractor_intensity\":%d,\"retryGame\":\"%c\"",
             distractor_intensity, retryTarget ? '1' : '0');
-        if (challengeComplete) {extra += ",\"challengeComplete\":1";};
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
         extra += "}";
 
         hub.Report(Time.format(gameStartTime,
