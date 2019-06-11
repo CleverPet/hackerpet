@@ -191,7 +191,7 @@ String convertBitfieldToSingleLetter(unsigned char targetPad, unsigned char pad)
 bool playLearningDoubleSequences(){
     yield_begin();
 
-    static unsigned long gameStartTime, time_start_wait, timestamp_before, activityDuration = 0;
+    static unsigned long gameStartTime, timestampTouchpad, timestampBefore, activityDuration = 0;
     static unsigned char foodtreatState = 99;
     static unsigned char touchpads[3]={hub.BUTTON_LEFT,
                                      hub.BUTTON_MIDDLE,
@@ -202,12 +202,13 @@ bool playLearningDoubleSequences(){
     static bool accurate = false;
     static bool timeout = false;
     static bool foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
+    static bool challengeComplete = false; // do not re-initialize
 
   // Static variables and constants are only initialized once, and need to be re-initialized
   // on subsequent calls
     gameStartTime=0;
-    time_start_wait=0;
-    timestamp_before =0;
+    timestampTouchpad=0;
+    timestampBefore =0;
     activityDuration = 0;
     foodtreatState = 99;
     sequence_pos = 0;
@@ -250,7 +251,7 @@ bool playLearningDoubleSequences(){
     hub.SetLights(hub.LIGHT_BTNS,TARGET_INTENSITY,TARGET_INTENSITY,SLEW);
 
     // progress to next state
-    time_start_wait = millis();
+    timestampTouchpad = millis();
 
     do
     {
@@ -259,7 +260,7 @@ bool playLearningDoubleSequences(){
         yield(false); // use yields statements any time the hub is pausing or waiting
     }
     while (!(pressed[0] != 0) //0 if any touchpad is touched
-            && millis()  < time_start_wait + TIMEOUT_MS); //0 if timed out
+            && millis()  < timestampTouchpad + TIMEOUT_MS); //0 if timed out
 
     hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off all touchpad lights
 
@@ -280,7 +281,7 @@ bool playLearningDoubleSequences(){
     }
 
     // Record start timestamp for performance logging
-    timestamp_before = millis();
+    timestampBefore = millis();
 
     // Start main interactions loop
     while (sequence_pos < SEQUENCE_LENGTH) {
@@ -300,7 +301,7 @@ bool playLearningDoubleSequences(){
         hub.SetLights(touchpad_sequence[sequence_pos],TARGET_INTENSITY,TARGET_INTENSITY,SLEW);
 
         // progress to next state
-        time_start_wait = millis();
+        timestampTouchpad = millis();
 
         do
         {
@@ -309,7 +310,7 @@ bool playLearningDoubleSequences(){
             yield(false); // use yields statements any time the hub is pausing or waiting
         }
         while (!(pressed[sequence_pos+1] != 0) //0 if any touchpad is touched
-                && millis()  < time_start_wait + TIMEOUT_MS); //0 if timed out
+                && millis()  < timestampTouchpad + TIMEOUT_MS); //0 if timed out
 
 
         if (pressed[sequence_pos+1] == 0) {
@@ -333,7 +334,7 @@ bool playLearningDoubleSequences(){
     }
 
     // record time period for performance logging
-    activityDuration = millis() - timestamp_before;
+    activityDuration = millis() - timestampBefore;
 
     hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off all touchpad lights
 
@@ -379,7 +380,7 @@ bool playLearningDoubleSequences(){
     if (currentLevel == MAX_LEVEL){
         if (countSuccesses() >= ENOUGH_SUCCESSES){
             Log.info("At MAX level! %u", currentLevel);
-            //TODO At MAX level CHALLENGE DONE
+            challengeComplete = true;
             resetPerformanceHistory();
         }
     }
@@ -389,20 +390,17 @@ bool playLearningDoubleSequences(){
         Log.info("Sending report");
 
         String extra ="{";
-
         extra += "\"targetSeq\":\"";
-
         for (int i = 0; i < SEQUENCE_LENGTH; ++i){
             extra += convertBitfieldToLetter(touchpad_sequence[i]);
         }
-
         extra += "\",\"pressedSeq\":\"";
-
         for (int i = 0; i < SEQUENCE_LENGTH; ++i){
             extra += convertBitfieldToSingleLetter(touchpad_sequence[i],pressed[i+1]);
         }
-
-        extra += "\"}";
+        extra += "\"";
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
+        extra += "}";
 
         // Log.info(extra);
 

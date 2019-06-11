@@ -54,6 +54,7 @@ const unsigned long SOUND_FOODTREAT_DELAY = 1200;  // (ms) delay for reward
 int performance[HISTORY_LENGTH] = {0};  // store the progress in this challenge
 int perfPos = 0;                        // position in the performance array
 bool foodtreatWasEaten = false;  // store if foodtreat was eaten in last interaction
+bool challengeComplete = false; // do not re-initialize
 
 // Use primary serial over USB interface for logging output (9600)
 // Choose logging level here (ERROR, WARN, INFO)
@@ -77,12 +78,14 @@ SYSTEM_THREAD(ENABLED);
 bool playEatingTheFood() {
   yield_begin();
 
-  static unsigned long gameStartTime, timestamp_before, activityDuration = 0;
+  static unsigned long gameStartTime, timestampBefore, activityDuration = 0;
   static unsigned char foodtreatState = 99;
 
   // Static variables and constants are only initialized once, and need to be
   // re-initialized on subsequent calls
-  gameStartTime, timestamp_before, activityDuration = 0;
+  gameStartTime = 0;
+  timestampBefore = 0;
+  activityDuration = 0;
   foodtreatState = 99;
 
   Log.info("-------------------------------------------");
@@ -109,7 +112,7 @@ bool playEatingTheFood() {
            FOODTREAT_DURATIONS[currentLevel - 1]);
 
   // Record start timestamp for performance logging
-  timestamp_before = millis();
+  timestampBefore = millis();
 
   // play "reward" sound
   hub.PlayAudio(hub.AUDIO_POSITIVE, 20);
@@ -126,7 +129,7 @@ bool playEatingTheFood() {
 
   // record time period for performance logging
   // (activity duration will always be interaction time + tray movement)
-  activityDuration = millis() - timestamp_before;
+  activityDuration = millis() - timestampBefore;
 
   // check if foodtreat was eaten
   if (foodtreatState == hub.PACT_RESPONSE_FOODTREAT_TAKEN) {
@@ -139,6 +142,11 @@ bool playEatingTheFood() {
 
   // send report
   Log.info("Sending report");
+  
+  String extra = "{";
+  if (challengeComplete) {extra += ",\"challengeComplete\":1";}
+  extra += "}";
+
   hub.Report(
       Time.format(gameStartTime, TIME_FORMAT_ISO8601_FULL),  // play_start_time
       playerName,                                            // player
@@ -147,7 +155,8 @@ bool playEatingTheFood() {
       activityDuration,  // duration -> linked to level and includes tray
                          // movement
       1,                 // foodtreat_presented
-      foodtreatWasEaten  // foodtreat_eaten
+      foodtreatWasEaten,  // foodtreat_eaten
+      extra              // extra field
   );
 
   // decide if level is going up or down
@@ -213,7 +222,7 @@ void loop() {
     perf_total += performance[i];
     if (perf_total >= ENOUGH_SUCCESSES) {
       Log.info("Challenge completed!");
-      // TODO go to next challenge code
+      challengeComplete = true;
       // reset performance
       perf_total = 0;
       for (unsigned char i = 0; i < HISTORY_LENGTH; ++i) performance[i] = 0;

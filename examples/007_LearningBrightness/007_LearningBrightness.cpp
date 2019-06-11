@@ -209,8 +209,8 @@ bool playLearningBrightness(){
 
     static unsigned char distractor_intensity_probes[8] = { // should not be re-initialized
         17, 21, 26, 33, 41, 51, 64, 80};
-    static unsigned long gameStartTime, timestamp_before, activityDuration = 0;
-    static unsigned long time_start_wait = 0;
+    static unsigned long gameStartTime, timestampBefore, activityDuration = 0;
+    static unsigned long timestampTouchpad = 0;
     static unsigned char pressed[2] = {0,0};
     static unsigned char foodtreatState = 99;
     static unsigned char touchpads[3]={hub.BUTTON_LEFT,  // should not be re-initialized
@@ -222,13 +222,14 @@ bool playLearningBrightness(){
     static bool accurate = false;
     static bool timeout = false;
     static bool foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
+    static bool challengeComplete = false; // do not re-initialize
 
   // Static variables and constants are only initialized once, and need to be re-initialized
   // on subsequent calls
     gameStartTime = 0;
-    timestamp_before = 0;
+    timestampBefore = 0;
     activityDuration = 0;
-    time_start_wait = 0;
+    timestampTouchpad = 0;
     pressed[0] = 0;
     pressed[1] = 0;
     foodtreatState = 99;
@@ -257,7 +258,7 @@ bool playLearningBrightness(){
     hub.SetDIResetLock(true);
 
     // Record start timestamp for performance logging
-    timestamp_before = millis();
+    timestampBefore = millis();
 
     if (retryTarget){
         Log.info("We're doing a retry interaction");
@@ -285,7 +286,7 @@ bool playLearningBrightness(){
     hub.SetLights(touchpads[0],TARGET_INTENSITY,TARGET_INTENSITY,SLEW);
 
     // progress to next state
-    time_start_wait = millis();
+    timestampTouchpad = millis();
     do
     {
         // detect any touchpads currently pressed
@@ -293,7 +294,7 @@ bool playLearningBrightness(){
         yield(false); // use yields statements any time the hub is pausing or waiting
     } // Ignore non-target touches
     while (!(pressed[0] == touchpads[0]) //0 if only pressed touchpad match
-            && millis()  < time_start_wait + TIMEOUT_MS); //0 if timed out
+            && millis()  < timestampTouchpad + TIMEOUT_MS); //0 if timed out
 
     hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off all touchpad lights
 
@@ -311,7 +312,7 @@ bool playLearningBrightness(){
 
         yield_sleep_ms(VIEW_WINDOW, false); // make sure the player has seen the touchpad
 
-        time_start_wait = millis();
+        timestampTouchpad = millis();
 
         do
         {
@@ -320,12 +321,12 @@ bool playLearningBrightness(){
             yield(false); // use yields statements any time the hub is pausing or waiting
         }
         while (!(pressed[1] != 0) //0 if any touchpad is touched
-                && millis()  < time_start_wait + MAX_REACTION_TIME); //0 if timed out
+                && millis()  < timestampTouchpad + MAX_REACTION_TIME); //0 if timed out
 
         hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off all touchpad lights
 
         // record time period for performance logging
-        activityDuration = millis() - timestamp_before;
+        activityDuration = millis() - timestampBefore;
 
         //check touchpads and accuracy for second interaction
         if (pressed[1] == 0){
@@ -396,7 +397,7 @@ discarding performance.");
     if (currentLevel == MAX_LEVEL){
         if (countSuccesses() >= ENOUGH_SUCCESSES){
             Log.info("At MAX level! %u", currentLevel);
-            //TODO At MAX level CHALLENGE DONE
+            challengeComplete = true;
             resetPerformanceHistory();
         }
     } else {
@@ -423,8 +424,10 @@ discarding performance.");
         // multiple touches possible, only report the wrong one if a miss
         extra += convertBitfieldToSingleLetter(touchpads[1],pressed[1]);
         extra += String::format(
-            "\",\"distractor_intensity\":%d,\"retryGame\":\"%c\"}",
+            "\",\"distractor_intensity\":%d,\"retryGame\":\"%c\"",
             distractor_intensity, retryTarget ? '1' : '0');
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
+        extra += "}";
 
         hub.Report(Time.format(gameStartTime,
                                TIME_FORMAT_ISO8601_FULL),  // play_start_time
