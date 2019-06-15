@@ -197,7 +197,7 @@ String convertBitfieldToLetter(unsigned char pad){
 bool playMatchingMoreColors(){
     yield_begin();
 
-    static unsigned long timestamp_before, gameStartTime, time_start_wait, activityDuration = 0;
+    static unsigned long timestampBefore, gameStartTime, timestampTouchpad, activityDuration = 0;
     static unsigned char foodtreatState = 99;
     static unsigned char touchpadsColorStart[3] = {};
     static unsigned char pressed = 0;
@@ -209,13 +209,14 @@ bool playMatchingMoreColors(){
     static bool accurate = false;
     static bool timeout = false;
     static bool foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
+    static bool challengeComplete = false; // do not re-initialize
     static String pressedSeq = "";
 
     // Static variables and constants are only initialized once, and need to be re-initialized
     // on subsequent calls
-    timestamp_before = 0;
+    timestampBefore = 0;
     gameStartTime = 0;
-    time_start_wait = 0;
+    timestampTouchpad = 0;
     activityDuration = 0;
     foodtreatState = 99;
     PADS_PRESSED_MAX_override = 0;
@@ -289,12 +290,14 @@ bool playMatchingMoreColors(){
 
     updateTouchpadLights();
 
+    hub.SetButtonAudioEnabled(true);
+
     // Record start timestamp for performance logging
-    timestamp_before = millis();
+    timestampBefore = millis();
 
     // main while loop
     while (match == false){
-        time_start_wait = millis();
+        timestampTouchpad = millis();
         do
         {
             yield(false); // use yields statements any time the hub is pausing or waiting
@@ -302,9 +305,9 @@ bool playMatchingMoreColors(){
             pressed = hub.AnyButtonPressed();
         }
         while (!(pressed != 0) //0 if any touchpad is touched
-                && millis()  < time_start_wait + TIMEOUT_MS); //0 if timed out
+                && millis()  < timestampTouchpad + TIMEOUT_MS); //0 if timed out
 
-        activityDuration = millis() - timestamp_before;
+        activityDuration = millis() - timestampBefore;
 
         if (pressed == hub.BUTTON_LEFT){
             Log.info("Left touchpad pressed");
@@ -395,7 +398,9 @@ bool playMatchingMoreColors(){
             hub.PlayAudio(hub.AUDIO_NEGATIVE, 80);
             // give the Hub a moment to finish playing the reward sound
             yield_sleep_ms(SOUND_FOODTREAT_DELAY, false);
-
+            // turn off touchpads sound and light during time-out
+            hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0);
+            hub.SetButtonAudioEnabled(false);
             yield_sleep_ms(WRONG_INTERACTION_DELAY, false);
         }
     }
@@ -411,7 +416,7 @@ bool playMatchingMoreColors(){
     if (currentLevel == MAX_LEVEL){
         if (countSuccesses() >= ENOUGH_SUCCESSES){
             Log.info("At MAX level! %u", currentLevel);
-            //TODO At MAX level CHALLENGE DONE
+            challengeComplete = true;
             retryGame = false;
             resetPerformanceHistory();
         }
@@ -441,12 +446,14 @@ bool playMatchingMoreColors(){
 
         String extra = String::format(
             "{\"start_state\":\"%c%c%c\",\"pressedSeq\":\"%s\",\"presses\":%u,"
-            "\"num_colors\":%u,\"retryGame\":%c}",
+            "\"num_colors\":%u,\"retryGame\":%c",
             REPORT_COLORS[touchpadsColorStart[0]],
             REPORT_COLORS[touchpadsColorStart[1]],
             REPORT_COLORS[touchpadsColorStart[2]], pressedSeq.c_str(),
             padsPressed, numberOfColors,
             retryGame ? '1' : '0');  // TODO this is the new value
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
+        extra += "}";
 
         // Log.info(extra);
 

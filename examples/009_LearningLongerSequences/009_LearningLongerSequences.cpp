@@ -196,7 +196,7 @@ String convertBitfieldToSingleLetter(unsigned char targetPad, unsigned char pad)
 bool playLearningLongerSequences(){
     yield_begin();
 
-    static unsigned long timestamp_before, time_start_wait, gameStartTime, activityDuration = 0;
+    static unsigned long timestampBefore, timestampTouchpad, gameStartTime, activityDuration = 0;
     static unsigned char foodtreatState = 99;
     static int lives = LIVES_START_STATE;
     static unsigned char touchpads[3]={hub.BUTTON_LEFT,
@@ -208,11 +208,12 @@ bool playLearningLongerSequences(){
     static bool accurate = false;
     static bool timeout = false;
     static bool foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
+    static bool challengeComplete = false; // do not re-initialize
 
     // Static variable and constants are only initialized once, and need to be re-initialized
     // on subsequent calls
-    timestamp_before = 0;
-    time_start_wait = 0;
+    timestampBefore = 0;
+    timestampTouchpad = 0;
     gameStartTime = 0;
     activityDuration = 0;
     foodtreatState = 99;
@@ -257,7 +258,7 @@ bool playLearningLongerSequences(){
     hub.SetLights(hub.LIGHT_BTNS,TARGET_INTENSITY,TARGET_INTENSITY,SLEW);
 
     // progress to next state
-    time_start_wait = millis();
+    timestampTouchpad = millis();
 
     do
     {
@@ -268,7 +269,7 @@ bool playLearningLongerSequences(){
     }
     while (!(pressed[0] != 0) //0 if any touchpad is touched
             //0 if timed out
-            && millis()  < time_start_wait + TIMEOUT_STIMULUS_MS);
+            && millis()  < timestampTouchpad + TIMEOUT_STIMULUS_MS);
 
     hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off all touchpad lights
 
@@ -289,7 +290,7 @@ bool playLearningLongerSequences(){
     }
 
     // Record start timestamp for performance logging
-    timestamp_before = millis();
+    timestampBefore = millis();
 
     // Start main interactions loop
     while (sequence_pos < sequenceLength) {
@@ -309,7 +310,7 @@ bool playLearningLongerSequences(){
         hub.SetLights(touchpad_sequence[sequence_pos],TARGET_INTENSITY,TARGET_INTENSITY,SLEW);
 
         // progress to next state
-        time_start_wait = millis();
+        timestampTouchpad = millis();
         do
         {
             // detect any buttons currently pressed
@@ -318,7 +319,7 @@ bool playLearningLongerSequences(){
             yield(false); // use yields statements any time the hub is pausing or waiting
         }
         while (!(pressed[sequence_pos+1] != 0) //0 if any touchpad is touched
-                && millis()  < time_start_wait + TIMEOUT_INTERACTIONS_MS); //0 if timed out
+                && millis()  < timestampTouchpad + TIMEOUT_INTERACTIONS_MS); //0 if timed out
 
         if (pressed[sequence_pos+1] == 0) {
             Log.info("No touchpad pressed, timeout");
@@ -356,7 +357,7 @@ bool playLearningLongerSequences(){
     }
 
     // record time period for performance logging
-    activityDuration = millis() - timestamp_before;
+    activityDuration = millis() - timestampBefore;
 
     hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0); // turn off all touchpad lights
 
@@ -396,7 +397,7 @@ bool playLearningLongerSequences(){
     {
         resetPerformanceHistory();
         Log.info("At MAX length! %u", sequenceLength);
-        //TODO At MAX length CHALLENGE DONE
+        challengeComplete = true;
     }
 
     // keep track of performance
@@ -427,20 +428,18 @@ bool playLearningLongerSequences(){
         Log.info("Sending report");
 
         String extra ="{";
-
         extra += "\"targetSeq\":\"";
-
         for (int i = 0; i < sequenceLength; ++i){
             extra += convertBitfieldToLetter(touchpad_sequence[i]);
         }
-
         extra += "\",\"pressedSeq\":\"";
         // TODO also report wrong touches that deducted lives?
         for (int i = 0; i < sequenceLength; ++i){
             extra += convertBitfieldToSingleLetter(touchpad_sequence[i],pressed[i+1]);
         }
-
-        extra += String::format("\",\"lives\":%d}",lives);
+        extra += String::format("\",\"lives\":%d",lives);
+        if (challengeComplete) {extra += ",\"challengeComplete\":1";}
+        extra += "}";
 
         // Log.info(extra);
 

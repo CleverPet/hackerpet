@@ -55,7 +55,7 @@ String result_str;
 
 // anything that deals with millis need to be able to be big enough, hence we
 // need the data type that can express the biggest integers (unsigned long)
-static unsigned long time_start_wait;
+static unsigned long timestampTouchpad;
 static unsigned long move_wait;
 static unsigned long playstart;
 static unsigned long timer_ms;
@@ -85,16 +85,16 @@ bool WhackAMoleGame()
     // DI reset occurs if, for example, DL detects that touchpads need re-calibration, like if hub was moved to a different surface
     hub.SetDIResetLock(true);  // prevent DI board from resetting during an interaction (would cause lights to go blank etc.)
 
-    time_start_wait = millis();
-
     playstart = Time.now(); // seconds since Unix epoch (1 January 1970)
     timer_ms = millis();
 
     light_timer_ms = 0;
 
+    timestampTouchpad = millis();
+
     do
     {
-        if (millis() > time_start_wait + light_timer_ms)
+        if (millis() > timestampTouchpad + light_timer_ms)
         {
             // choose some target lights, and store which targets were randomly chosen
             target = hub.SetRandomButtonLights(1, YELLOW, BLUE, FLASHING, FLASHING_DUTY_CYCLE);
@@ -110,7 +110,7 @@ bool WhackAMoleGame()
     while ((pressed != hub.BUTTON_LEFT // we want it to just be a single touchpad
                 && pressed != hub.BUTTON_MIDDLE
                 && pressed != hub.BUTTON_RIGHT)
-            && millis()  < time_start_wait + TIMEOUT_MS
+            && millis()  < timestampTouchpad + TIMEOUT_MS
         );
 
     timer_ms = millis() - timer_ms;

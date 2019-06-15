@@ -54,7 +54,7 @@ static bool timeout;
 static char foodtreat_state;
 static unsigned char target;
 static unsigned char pressed;
-static unsigned long time_start_wait;
+static unsigned long timestampTouchpad;
 static unsigned long playstart;
 static unsigned long timer_ms;
 
@@ -88,7 +88,7 @@ bool OneTwoThreeButtonGame(int num_pads)
     timer_ms = millis();
 
     // progress to next state
-    time_start_wait = millis();
+    timestampTouchpad = millis();
 
     do
     {
@@ -99,7 +99,7 @@ bool OneTwoThreeButtonGame(int num_pads)
     while ((pressed != hub.BUTTON_LEFT // we want it to just be a single touchpad
                 && pressed != hub.BUTTON_MIDDLE
                 && pressed != hub.BUTTON_RIGHT)
-            && millis()  < time_start_wait + TIMEOUT_MS
+            && millis()  < timestampTouchpad + TIMEOUT_MS
             );
 
     timer_ms = millis() - timer_ms;

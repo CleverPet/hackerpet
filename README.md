@@ -18,7 +18,7 @@ This package shows you how to access the CleverPet Hub's HubInterface class, let
 
 [![Getting started](https://i.imgur.com/GqaLF30.png)](https://vimeo.com/335536434/6d25cf8962)
 
-1. Pick up a [Particle Photon](https://store.particle.io/products/photon)
+1. Pick up a [Particle Photon](https://store.particle.io/products/photon?variant=9097143491) (with headers) or [Amazon](https://www.amazon.com/dp/B016YNU1A0/)
 2. Configure your Photon using Particle's [Tinker app](https://docs.particle.io/tutorials/developer-tools/tinker/core/), then [swap your own Photon for the one that's in your Hub](VIDEO_GOES_HERE). Note: *only* Hubs with serial numbers that start with an 'H' have a Photon in them.
 3. Sign in on the [Particle website](https://login.particle.io/login), go to the [Particle build platform](https://build.particle.io) and load up the [CleverPet library](https://build.particle.io/libs/hackerpet/). Click on an example, hit the lightning bolt, and BOOM! you've now got a customized CleverPet Hub!
 
@@ -80,7 +80,7 @@ Roughly speaking, the learning steps required for getting your player to product
 3. **Train gradually through [successive
 approximation](https://en.wikipedia.org/wiki/Shaping_(psychology)#Successive_approximations).** If you want your player to memorize a sequence of 12 lights, start by teaching her to remember the location of just one. Once she's figured out one light, occasionally intersperse two lights instead of just one. Once the player's performance on two lights improves, go to three lights, and so on.
 
-4. **Whenever possible take advantage of actions an player does "by accident"** This is what scientifically-minded people often call behavioral "noise". By quickly rewarding the times that a behavioral "mistake" is in the right direction (e.g., when teaching "lie down" and a dog "accidentally" lies down) you can accelerate training significantly. If you want your player to touch a touchpad, it can be helpful to allow an interaction to continue even if a player has touched the "wrong" touchpads as may give them a chance to touch the right one.
+4. **Whenever possible take advantage of actions a player does "by accident"** This is what scientifically-minded people often call behavioral "noise". By quickly rewarding the times that a behavioral "mistake" is in the right direction (e.g., when teaching "lie down" and a dog "accidentally" lies down) you can accelerate training significantly. If you want your player to touch a touchpad, it can be helpful to allow an interaction to continue even if a player has touched the "wrong" touchpads as may give them a chance to touch the right one.
 
 ## Kinds of feedback you can give your player
 
@@ -102,7 +102,7 @@ It's worth mentioning that the primary/secondary distinction is not a pure one. 
 
 This is where things can get really fun. Want to add a new game, and perhaps see how the community, or dogs, or cats, respond to it? Create your own fork and submit a pull request. We'll chat about it as a community, and if it seems sensible we'll add it to the collection of games!
 
-To make this work, all contributors first have to sign the [CleverPet Individual Contributor License Agreement (CLA)](https://docs.google.com/forms/d/e/1FAIpQLSeXAajtFZpQ0VtHK2APtfzrA5w8DMNagJhCfLVr6h9lCQgj1g/viewform), which is based on the Google CLA. This agreement provides the CleverPet team with a license to re-distribute your contributions. After you sign, we'll add you to the group that enables you to submit pull requests, etc.
+To make this work, all contributors first have to sign the [CleverPet Individual Contributor License Agreement (CLA)](https://docs.google.com/forms/d/e/1FAIpQLSeXAajtFZpQ0VtHK2APtfzrA5w8DMNagJhCfLVr6h9lCQgj1g/viewform), which is based on the Google CLA. This agreement provides the CleverPet team with a license to re-distribute your contributions. 
 
 Whenever possible, please follow these contribution guidelines:
 - Keep each pull request small and focused on a single game, feature, or bug fix.

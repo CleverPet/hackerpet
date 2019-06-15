@@ -139,8 +139,9 @@ bool playExploringTheTouchpads() {
   yield_begin();
 
   static bool foodtreatWasEaten = false; // store if foodtreat was eaten in last interaction
-  static unsigned long timestamp_before, reaction_time, gameStartTime = 0;
+  static unsigned long timestampBefore, reactionTime, gameStartTime = 0;
   static bool timeout = false;          // holds timeout state
+  static bool challengeComplete = false; // do not re-initialize
   static int foodtreatState = 99;       // holds return value of foodmachine
   static int FLASHING = 0;              // 0: no FLASHING
   static int FLASHING_DUTY_CYCLE = 99;  // ignored since no FLASHING
@@ -150,7 +151,9 @@ bool playExploringTheTouchpads() {
   // Static variables and constants are only initialized once, and need to be
   // re-initialized on subsequent calls
   foodtreatWasEaten = false;       // store if foodtreat was eaten in last interaction
-  timestamp_before, reaction_time, gameStartTime = 0;
+  timestampBefore = 0;
+  reactionTime = 0;
+  gameStartTime = 0;
   timeout = false;         // holds timeout state
   foodtreatState = 99;     // holds return value of foodmachine
   pressed = 0;    // bit field that holds which touchpad was
@@ -178,7 +181,7 @@ bool playExploringTheTouchpads() {
   hub.SetDIResetLock(true);
 
   // Record start timestamp for performance logging
-  timestamp_before = millis();
+  timestampBefore = millis();
 
   // Turn on touchpad lights
   hub.SetRandomButtonLights(3, YELLOW, BLUE, FLASHING, FLASHING_DUTY_CYCLE);
@@ -190,10 +193,10 @@ bool playExploringTheTouchpads() {
   } while ((pressed != hub.BUTTON_LEFT && pressed != hub.BUTTON_MIDDLE &&
             pressed != hub.BUTTON_RIGHT) &&
            millis() <
-                (timestamp_before + TIMEOUT_DURATIONS[currentLevel - 1]));
+                (timestampBefore + TIMEOUT_DURATIONS[currentLevel - 1]));
 
   // Record time period for performance logging
-  reaction_time = millis() - timestamp_before;
+  reactionTime = millis() - timestampBefore;
 
   // Turn off lights
   hub.SetLights(hub.LIGHT_BTNS, 0, 0, 0);
@@ -232,17 +235,24 @@ bool playExploringTheTouchpads() {
   }
 
   if (!timeout) {
+
     // Send report
     Log.info("Sending report");
+
+    String extra = "{";
+    if (challengeComplete) {extra += ",\"challengeComplete\":1";} //TODO this comes one game too late
+    extra += "}";
+
     hub.Report(
         Time.format(gameStartTime,
                     TIME_FORMAT_ISO8601_FULL), // play_start_time
         playerName,                           // player
         currentLevel,                         // level
         String(foodtreatWasEaten),           // result
-        reaction_time, // duration -> linked to level and includes tray movement
+        reactionTime, // duration -> linked to level and includes tray movement
         1,             // foodtreat_presented
-        foodtreatWasEaten // foodtreatWasEaten
+        foodtreatWasEaten, // foodtreatWasEaten
+        extra             // extra field
     );
   }
 
@@ -251,7 +261,7 @@ bool playExploringTheTouchpads() {
     addResultToPerformanceHistory(foodtreatWasEaten);
     if (countSuccesses() >= ENOUGH_SUCCESSES) {
       Log.info("At MAX level! %u", currentLevel);
-      // TODO At MAX level CHALLENGE DONE
+      challengeComplete = true;
       resetPerformanceHistory();
     }
   } else {
