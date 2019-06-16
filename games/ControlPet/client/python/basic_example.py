@@ -2,7 +2,7 @@ from controlpet import Cleverpet
 
 if __name__=="__main__":
 
-    hub = Cleverpet ("192.168.0.137",4889)
+    hub = Cleverpet ("192.168.0.136",4889)
 
     hub.connect()
 

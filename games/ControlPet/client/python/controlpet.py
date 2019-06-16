@@ -16,8 +16,44 @@ import socket
 import select
 import time
 
+
+HUB_BUTTON_LEFT = 0
+HUB_BUTTON_MIDDLE = 1
+HUB_BUTTON_RIGHT = 2
+HUB_LIGHT_CUE = 3
+
+
 def decode_buttons(state):
     return [(state & 1) > 0, (state & 2) > 0, (state & 4) > 0 ]
+
+
+button_name_value = {
+            "left": HUB_BUTTON_LEFT,
+            "0": HUB_BUTTON_LEFT,
+            "middle": HUB_BUTTON_MIDDLE,
+            "1": HUB_BUTTON_MIDDLE,
+            "right": HUB_BUTTON_RIGHT,
+            "2": HUB_BUTTON_RIGHT,
+            "cue": HUB_LIGHT_CUE,
+            "3": HUB_LIGHT_CUE
+}
+
+"""takes a button number or button name and returns the button index"""
+def button_to_value(button):
+    retVal = -1
+    value_decoded = False
+    try:
+        retVal = int(button)
+        value_decoded = True
+    except ValueError:
+        pass
+    if not value_decoded:
+        try:
+            button_key = button.lower().strip()
+            retVal = button_name_value.get(button_key, -1)
+        except:
+            pass
+    return retVal
 
 class Cleverpet:
     host = None
@@ -34,6 +70,29 @@ class Cleverpet:
     wait_for_button_press = False
     buttons_pressed = [False,False,False]
 
+    intensity_base = 60  #Max brightness of the lights
+
+    @staticmethod
+    def discover_hub(timeout = 10):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        address = ( "0.0.0.0", 4888 )
+        sock.bind(address)
+        
+        retVal = None
+
+        readable,writeable,exceptions = select.select([sock],[],[],10)
+        if readable:
+            data,address = sock.recvfrom(4096)
+            name = "unknown"
+            msg = str(data)
+            if data.startswith(b"@shout:"):
+                fields = msg.split(":")
+                if len(fields) > 1:
+                    name = fields[1]
+                retVal = {"address": address[0], "port": address[1], "name": name}
+        else:
+            logging.info("Discovery timed out")
+        return retVal
 
     def __init__(self, host, port):
         self.host = host 
@@ -160,16 +219,25 @@ class Cleverpet:
         self.button_color(1,"off")
         self.button_color(2,"off")
 
-    def button_color(self, button, color):
+
+    def button_color(self, button, color, intensity = 100):
         yellow = 0
         blue = 0
 
-        if color in ["yellow", "white"]:
-            yellow = 60
-        if color in ["blue", "white"]:
-            blue = 60
+        button_idx = button_to_value(button)
 
-        self._send(f"@light:{button}:{yellow}:{blue}:;")
+        if button_idx >= 0:
+            intensity = max(0, min(intensity, 100))
+            brightness = int((intensity * self.intensity_base) / 100)
+
+            if color in ["yellow", "white"]:
+                yellow = brightness
+            if color in ["blue", "white"]:
+                blue = brightness
+
+            self._send(f"@light:{button_idx}:{yellow}:{blue}:;")
+        else:
+            raise ValueError("invalid button identifier")
 
     def wait_for_button(self, timeout = 1.0):
         start = time.time()
