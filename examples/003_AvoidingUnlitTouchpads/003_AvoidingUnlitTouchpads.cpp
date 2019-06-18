@@ -209,7 +209,7 @@ bool playAvoidingUnlitTouchpads() {
   timestampBefore = millis();
 
   yellow = random(20, 90); // pick a yellow for interaction
-  blue = random(20.90);    // pick a blue for interaction
+  blue = random(20, 90);    // pick a blue for interaction
 
   if (retryTarget != 0) {
     Log.info("We're doing a retry interaction");
