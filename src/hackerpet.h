@@ -331,7 +331,7 @@ private:
 
     bool _apply_desired_indicator_light(unsigned char ilstate);
     // set indicator light according to ilstate
-    
+
     bool _poll_diag();
     // poll the state of the DL including (importantly) food state machine state, dispense motor active, LEDs active, sound playing, dispense detected
 
@@ -366,6 +366,9 @@ private:
 
     unsigned char _milliseconds_to_deciseconds_for_DL_T(unsigned long);
     // convert milliseconds unsigned long to deciseconds unsigned char for use with DL API
+
+    bool _check_timezone();
+    // check if there's a valid timezone and request one if missing
 
 //PRIVATE STATIC CONSTANTS
 private:
@@ -470,6 +473,10 @@ private:
     unsigned long _platter_error_reset_wait = 10000; // attempt reset of platter after some time
 
     bool _want_tray_closed = false;
+
+    //timezone settings
+    unsigned long _last_timezone_request = 0; // last time a timezone request was send
+    unsigned long _timezone_request_interval = 300000; // if no valid timezone send a request every 5 mins
 
     //audio settings
     bool _audio_enabled = true; //enable/disable audio output
