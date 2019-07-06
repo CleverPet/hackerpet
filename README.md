@@ -2,13 +2,9 @@
 
 The [CleverPet Hub](https://clever.pet/) is a programmable device that lets you automatically train and interact with other species. It's kind of like a "game console for pets".
 
-
 <p align="center">
 <img width="460" src="docs/images/hub1.png">
 </p>
-
-
-</div>
 
 The Hub is built on the [Particle](https://particle.io) platform, which means that the full suite of tools Particle has built can be used to control the CleverPet Hub.
 
@@ -26,10 +22,32 @@ This package shows you how to access the CleverPet Hub's HubInterface class, let
 
 [![Setting up reporting](https://i.imgur.com/sCmin5Z.png)](https://vimeo.com/335536394/35bbbc9cb8)
 
-1. Go to [clvr.pt/reports](http://clvr.pt/reports) and copy the provided spreadsheet. Then click the `share` button on the top right. In the share window enter the email address of the hackerpet report server: **`report-server@hackerpet-235515.iam.gserviceaccount.com`**, and click OK.  
-2. Go to the [integrations page](https://console.particle.io/integrations) on the Console of your Particle account. Click on **New integration**. Then pick a **Webhook**. For **Event Name** you fill in `report`.  
-For **URL** you fill in the following URL (replace with your sheet ID):  
-`https://report.hackerpet.com/v1/report?sheet_id=<YOUR_SPREADSHEET_ID_GOES_HERE>`. Change the **request type** to `POST`. Change the **request format** to `JSON`. Select your hackerpet photon under **Device**.  Click `save`.
+1. Go to [clvr.pt/reports](http://clvr.pt/reports) and copy the provided spreadsheet. Then click the `share` button on the top right. In the share window enter the email address of the hackerpet report server:  
+**`report-server@hackerpet-235515.iam.gserviceaccount.com`**, and click OK.  
+2. Go to the [integrations page](https://console.particle.io/integrations) on the Console of your Particle account.  
+Click on **New Integration**.  
+Then pick a **Webhook**.  
+Choose **Custom Template**.  
+Copy the following code block into the textbox and don't forget to **replace `<ADD_YOUR_SHEET_ID_HERE>` with your sheet id**.  
+	```javascript
+	{
+	    "event": "hckrpt",
+	    "responseTopic": "hook-response/hckrpt/{{{PARTICLE_DEVICE_ID}}}",
+	    "errorResponseTopic": "hook-error/hckrpt/{{{PARTICLE_DEVICE_ID}}}",
+	    "url": "https://api.hackerpet.com/v1/webhook?sheet_id=<ADD_YOUR_SHEET_ID_HERE>",
+	    "requestType": "POST",
+	    "noDefaults": true,
+	    "rejectUnauthorized": true,
+	    "responseTemplate": "",
+	    "json": "{\n  \"event\": \"{{{PARTICLE_EVENT_NAME}}}\",\n  \"data\": {{{PARTICLE_EVENT_VALUE}}},\n  \"coreid\": \"{{{PARTICLE_DEVICE_ID}}}\",\n  \"published_at\": \"{{{PARTICLE_PUBLISHED_AT}}}\"\n}"
+	}
+	```
+	Click **Create Webhook**.
+
+*Advanced methode*: You can also configure the webhook with the [particle-cli](https://docs.particle.io/tutorials/developer-tools/cli/) and the following command, after adding your sheet id to the `particle_webhook.json` config file:
+```shell
+$ particle webhook create docs/particle_webhook.json
+```
 
 ### What now?
 
@@ -47,7 +65,7 @@ In the hackerpet library words such as "challenge", "interaction" etc. are used 
 
 *  **Interaction:** A presentation of lights, sounds from a Hub, and the corresponding responses of a player, ending with a report. Nearly always, an interaction begins with the Hub doing some things, the player doing some things in response, and then the player getting some feedback as to whether they did the right thing.
 
-*  **Challenge:** A series of one or more interactions, usually of progressively increasing difficulty, and often designed to teach the player a particular skill. *Example: the Responding Quickly challenge where the pet has to go through several iterations of pushing multiple lit up buttons and getting foodtreats.**
+*  **Challenge:** A series of one or more interactions, usually of progressively increasing difficulty, and often designed to teach the player a particular skill. *Example: the Responding Quickly challenge where the pet has to go through several iterations of pushing multiple lit up buttons and getting foodtreats.*
 
 *  **Challenge set:** A series of challenges, such as the collection of 13 original CleverPet challenges.
 
@@ -80,7 +98,7 @@ Roughly speaking, the learning steps required for getting your player to product
 3. **Train gradually through [successive
 approximation](https://en.wikipedia.org/wiki/Shaping_(psychology)#Successive_approximations).** If you want your player to memorize a sequence of 12 lights, start by teaching her to remember the location of just one. Once she's figured out one light, occasionally intersperse two lights instead of just one. Once the player's performance on two lights improves, go to three lights, and so on.
 
-4. **Whenever possible take advantage of actions a player does "by accident"** This is what scientifically-minded people often call behavioral "noise". By quickly rewarding the times that a behavioral "mistake" is in the right direction (e.g., when teaching "lie down" and a dog "accidentally" lies down) you can accelerate training significantly. If you want your player to touch a touchpad, it can be helpful to allow an interaction to continue even if a player has touched the "wrong" touchpads as may give them a chance to touch the right one.
+4. **Whenever possible take advantage of actions a player does "by accident".** This is what scientifically-minded people often call behavioral "noise". By quickly rewarding the times that a behavioral "mistake" is in the right direction (e.g., when teaching "lie down" and a dog "accidentally" lies down) you can accelerate training significantly. If you want your player to touch a touchpad, it can be helpful to allow an interaction to continue even if a player has touched the "wrong" touchpads as may give them a chance to touch the right one.
 
 ## Kinds of feedback you can give your player
 
@@ -102,7 +120,7 @@ It's worth mentioning that the primary/secondary distinction is not a pure one. 
 
 This is where things can get really fun. Want to add a new game, and perhaps see how the community, or dogs, or cats, respond to it? Create your own fork and submit a pull request. We'll chat about it as a community, and if it seems sensible we'll add it to the collection of games!
 
-To make this work, all contributors first have to sign the [CleverPet Individual Contributor License Agreement (CLA)](https://docs.google.com/forms/d/e/1FAIpQLSeXAajtFZpQ0VtHK2APtfzrA5w8DMNagJhCfLVr6h9lCQgj1g/viewform), which is based on the Google CLA. This agreement provides the CleverPet team with a license to re-distribute your contributions. 
+To make this work, all contributors first have to sign the [CleverPet Individual Contributor License Agreement (CLA)](https://docs.google.com/forms/d/e/1FAIpQLSeXAajtFZpQ0VtHK2APtfzrA5w8DMNagJhCfLVr6h9lCQgj1g/viewform), which is based on the Google CLA. This agreement provides the CleverPet team with a license to re-distribute your contributions.
 
 Whenever possible, please follow these contribution guidelines:
 - Keep each pull request small and focused on a single game, feature, or bug fix.
