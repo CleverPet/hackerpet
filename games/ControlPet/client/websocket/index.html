@@ -1,0 +1,40 @@
+<html>
+
+<head>
+
+    <script>
+        var sock;
+
+        function onMessage(evt) {
+            console.log("Message received: " + evt.data);
+        }
+
+        function onOpen(evt) {
+            document.getElementById("connectbutton").disabled = true;
+            console.log("Connected");
+        }
+
+        function connectWS(uri) {
+            sock = new WebSocket(uri);
+            sock.onmessage = onMessage,
+                sock.onopen = onOpen;
+        }
+
+        function connectButton() {
+            var address = document.getElementById("addressfield").value;
+            connectWS("ws://" + address + ":4890/");
+        }
+    </script>
+</head>
+
+<body>
+
+    Hub Address: <input id="addressfield" type="text" name="address"> <button id="connectbutton"
+        onclick="connectButton();">Connect</button>
+
+
+    <button style="width: 100%; height: 200px;" onclick="sock.send('@dispense;');">Dispense</button>
+
+</body>
+
+</html>

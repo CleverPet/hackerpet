@@ -13,10 +13,13 @@ void mgschwan_sendStringUDP(String message, IPAddress &remote);
 //Receive a string via UDP enclosed in a @......;
 bool mgschwan_recvStringUDP(String &message);
 
+void mgschwan_websocket_loop();
 
 void mgschwan_setupNetwork();
+bool mgschwan_recvString(String &message);
 bool mgschwan_recvStringTCP(String &message);
 bool mgschwan_sendStringTCP(String message);
+bool mgschwan_sendString(String message);
 
 
 //Construct a message that will instruct the receiver to play the specified sound file

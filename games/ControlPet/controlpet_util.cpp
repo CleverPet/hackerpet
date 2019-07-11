@@ -1,4 +1,6 @@
 #include "controlpet_util.h"
+#include "WebSockets.h"
+#include "WebSocketsServer.h"
 
 UDP mgschwan_Udp;
 int mgschwan_broadcastPort = 4888;
@@ -24,9 +26,70 @@ char tcp_recv_buffer[MESSAGE_MAX_LEN+1];
 TCPServer server = TCPServer(mgschwan_broadcastPort+1);
 TCPClient client;
 
+WebSocketsServer webSocket = WebSocketsServer(mgschwan_broadcastPort+2);
+String webSocket_message_in;
+uint8_t webSocket_client_id = 0;
+
+
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght) {
+
+    switch(type) {
+        case WStype_DISCONNECTED:
+            break;
+        case WStype_CONNECTED:
+            {
+                webSocket_client_id = num;
+                Log.info("Websocket client connected %d", num);
+            }
+            break;
+        case WStype_TEXT:
+            webSocket_message_in.remove(0);
+            webSocket_message_in += String((char *)payload);
+            break;
+        case WStype_BIN:
+            //Binary not supported
+            break;
+    }
+
+}
+
+void mgschwan_websocket_loop() {
+    /* Only process messages if not plain TCP client is connected */
+    if (!client.connected())
+    {
+        webSocket.loop();
+    }
+}
+
+
+//Receive on all connected channels
+bool mgschwan_recvString(String &message)
+{
+
+    if (mgschwan_recvStringTCP(message))
+    {
+        //Received TCP Message
+        return true;
+    } 
+    else {
+        //Receive webSocket Message
+        
+        if (webSocket_message_in.length() > 0)
+        {
+            message.remove(0);
+            message += webSocket_message_in;
+            webSocket_message_in.remove(0);
+            return true;
+        }        
+    }
+    return false;
+}
+
 void mgschwan_setupNetwork()
 {
   server.begin();
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
 }
     
 void mgschwan_sendStringUDP(String message, IPAddress &remote) {
@@ -45,6 +108,15 @@ bool mgschwan_sendStringTCP(String message) {
         return true;
     }
     return false;
+}
+
+bool mgschwan_sendString(String message) {
+    bool retVal = false;
+
+    retVal = mgschwan_sendStringTCP(message);
+    retVal = retVal || webSocket.sendTXT(webSocket_client_id, message.c_str());
+    
+    return retVal;
 }
 
 bool mgschwan_recvStringTCP(String &message)
