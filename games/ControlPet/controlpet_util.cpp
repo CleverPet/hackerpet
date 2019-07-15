@@ -89,12 +89,11 @@ void mgschwan_serve_webinterface() {
 
         if (request_finished)
         {
-            webclient.println("HTTP/1.1 200 OK");
+            webclient.println("HTTP/1.0 200 OK");
             webclient.println("Content-type: text/html");
-            webclient.println("Connection: close");
+            webclient.print("Content-length: ");
+            webclient.println(sizeof(bin2c_index_html));
             webclient.println("");
-            webclient.println("<!DOCTYPE HTML>");
-
             webclient.write(bin2c_index_html, sizeof(bin2c_index_html));
 
             webclient.println("</body>");

@@ -1,6 +1,13 @@
 <html>
 <head>
 
+    <style>
+    
+        button {
+            font-size: 1.5em;
+        }
+    
+    </style>
     <script>
         var sock;
 
@@ -170,21 +177,21 @@
     </script>
 </head>
 
-<body>
+<body style="height: 100%; width: 100%; padding: 0;">
     Status: <span id="conn_status">Disconnected</span>
-    <div style="margin: 0; height: 100%; width; 100%;">
+    <div style="margin: 0; height: 100%; width; 100%; margin: 0; padding: 0;">
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black;  margin-right:auto;" onclick="buttonColor('left','white');" >W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-right:auto;" onclick="buttonColor('left','white');" >W</button>
     <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','white');">W</button>
     <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onclick="buttonColor('right','white');">W</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: black;  margin-right:auto;" onclick="buttonColor('left','blue');" >B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: black; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','blue');">B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: black; margin-left: auto; " onclick="buttonColor('right','blue');">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-right:auto;" onclick="buttonColor('left','blue');" >B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','blue');">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; " onclick="buttonColor('right','blue');">B</button>
     </div>
 
     <div style="height: 4%; "></div>
@@ -203,9 +210,9 @@
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onclick="nextColor('left');" >NEXT</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onclick="nextColor('middle');">NEXT</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onclick="nextColor('right');">NEXT</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onclick="nextColor('left');" >NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onclick="nextColor('middle');">NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onclick="nextColor('right');">NEXT COLOR</button>
     </div>
 
     <div style="height: 4%; "></div>
