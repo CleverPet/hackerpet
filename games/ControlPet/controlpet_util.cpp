@@ -1,6 +1,8 @@
 #include "controlpet_util.h"
 #include "WebSockets.h"
 #include "WebSocketsServer.h"
+#include "client/websocket/index_html.h"
+
 
 UDP mgschwan_Udp;
 int mgschwan_broadcastPort = 4888;
@@ -24,7 +26,10 @@ int tcp_recv_state = RECV_STATE_NEW;
 char tcp_recv_buffer[MESSAGE_MAX_LEN+1];
 
 TCPServer server = TCPServer(mgschwan_broadcastPort+1);
+TCPServer webserver = TCPServer(80);
+
 TCPClient client;
+TCPClient webclient;
 
 WebSocketsServer webSocket = WebSocketsServer(mgschwan_broadcastPort+2);
 String webSocket_message_in;
@@ -60,6 +65,46 @@ void mgschwan_websocket_loop() {
         webSocket.loop();
     }
 }
+
+void mgschwan_serve_webinterface() {
+    int c = 0, last_c = 0, last_last_c = 0;
+    webclient = webserver.available();
+    bool request_finished = false;
+    if (webclient.connected()) {
+        while (webclient.available())
+        {
+            c = webclient.read();
+            last_last_c = last_c;
+            last_c = c;
+            /* Request finished. We are assuming it is a GET request since 
+             * we are only serving a single html file
+             * The browser will probably try to access the favicon as well
+             * but he has to deal with it
+             */
+            if (c == '\n' && (c == last_c || c == last_last_c) )
+            {
+                request_finished = true;
+            }
+        }
+
+        if (request_finished)
+        {
+            webclient.println("HTTP/1.1 200 OK");
+            webclient.println("Content-type: text/html");
+            webclient.println("Connection: close");
+            webclient.println("");
+            webclient.println("<!DOCTYPE HTML>");
+
+            webclient.write(bin2c_index_html, sizeof(bin2c_index_html));
+
+            webclient.println("</body>");
+        }
+
+        delay (1); //That is a hack to allow the browser to receive the data
+        webclient.stop();
+    }
+}
+
 
 
 //Receive on all connected channels

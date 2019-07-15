@@ -14,6 +14,7 @@ void mgschwan_sendStringUDP(String message, IPAddress &remote);
 bool mgschwan_recvStringUDP(String &message);
 
 void mgschwan_websocket_loop();
+void mgschwan_serve_webinterface();
 
 void mgschwan_setupNetwork();
 bool mgschwan_recvString(String &message);

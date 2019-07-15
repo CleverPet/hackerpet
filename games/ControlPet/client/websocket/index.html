@@ -1,5 +1,4 @@
 <html>
-
 <head>
 
     <script>
@@ -9,8 +8,13 @@
             console.log("Message received: " + evt.data);
         }
 
+        function onClose(evt) {
+            document.getElementById("conn_status").innerHTML = "Disconnected";
+            console.log("Disconnected");
+        }
+
         function onOpen(evt) {
-            document.getElementById("connectbutton").disabled = true;
+            document.getElementById("conn_status").innerHTML = "Connected";
             console.log("Connected");
         }
 
@@ -21,20 +25,207 @@
         }
 
         function connectButton() {
-            var address = document.getElementById("addressfield").value;
-            connectWS("ws://" + address + ":4890/");
+            connectWS("ws://" + window.location.hostname + ":4890/");
         }
+
+        function sendCommand(cmd){
+            console.log("Sending "+ cmd);
+            if (sock.readyState === WebSocket.OPEN) {
+                sock.send(cmd);
+            }
+        }
+
+        window.addEventListener("load", function() {
+            connectButton();            
+        });
+
+        var button_name_value = {
+            "left": 0,
+            "0": 0,
+            "middle": 1,
+            "1": 1,
+            "right": 2,
+            "2": 2,
+            "cue": 3,
+            "3": 3
+        };
+
+        function buttonToValue(button) {
+            var retVal = -1;
+            retVal = button_name_value[""+button];
+            return retVal;
+        }
+
+        function buttonColor(button, color, intensity) {
+            var yellow = 0;
+            var blue = 0;
+
+            if (intensity == undefined)
+            {
+                intensity = 100;
+            }
+
+            var button_idx = buttonToValue(button);
+
+            if (button_idx >= 0) 
+            {
+               intensity = Math.max(0, Math.min(intensity, 100));
+               var brightness = parseInt((intensity * 60) / 100);
+               if (color === "yellow" || color === "white")
+               {
+                   yellow = brightness;
+               }
+               if (color === "blue" || color === "white")
+               {
+                   blue = brightness;
+               }
+
+            }
+            sendCommand("@light:"+button_idx+":"+yellow+":"+blue+":;");
+        }
+
+        function dispense() {
+            sendCommand("@dispense;");
+        }
+
+        function goodResult() {
+            positiveSound();
+            buttonColor("left","off");
+            buttonColor("middle","off");
+            buttonColor("right","off");
+            dispense();
+            newRound();
+        }
+
+        function badResult() {
+            negativeSound();
+            buttonColor("left","off");
+            buttonColor("middle","off");
+            buttonColor("right","off");
+            newRound();
+        }
+
+
+        function playAudio(sound)
+        {
+            sendCommand("@playaudio:"+sound+":;");
+        }
+
+        function newRound()
+        {
+            sendCommand("@reinitialize;");
+        }
+    
+        function positiveSound()
+        {
+            playAudio("positive");
+        }
+
+        function negativeSound()
+        {
+            playAudio("negative");
+        }
+
+        function doSound()
+        {
+            playAudio("do");
+        }
+
+        function clickSound()
+        {
+            playAudio("click");
+        }
+
+        function squeakSound()
+        {
+            playAudio("squeak");
+        }
+
+        function leftSound()
+        {
+            playAudio("left");
+        }
+
+        function middleSound()
+        {
+            playAudio("middle");
+        }
+
+        function rightSound()
+        {
+            playAudio("right");
+        }
+
+        var colors = ["white","yellow","blue"];
+
+        var current_color_index = [0,0,0];
+        
+        function nextColor(button) {
+            var button_idx = buttonToValue(button);
+            current_color_index[button_idx] = (current_color_index[button_idx] + 1) % colors.length;
+            buttonColor(button_idx, colors[current_color_index[button_idx]]);
+        }
+
+
     </script>
 </head>
 
 <body>
+    Status: <span id="conn_status">Disconnected</span>
+    <div style="margin: 0; height: 100%; width; 100%;">
+    <div style="height: 4%; "></div>
+    <div style="width: 100%; height: 8%; display: flex;">
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black;  margin-right:auto;" onclick="buttonColor('left','white');" >W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','white');">W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onclick="buttonColor('right','white');">W</button>
+    </div>
 
-    Hub Address: <input id="addressfield" type="text" name="address"> <button id="connectbutton"
-        onclick="connectButton();">Connect</button>
+    <div style="height: 4%; "></div>
+    <div style="width: 100%; height: 8%; display: flex;">
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: black;  margin-right:auto;" onclick="buttonColor('left','blue');" >B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: black; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','blue');">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: black; margin-left: auto; " onclick="buttonColor('right','blue');">B</button>
+    </div>
+
+    <div style="height: 4%; "></div>
+    <div style="width: 100%; height: 8%; display: flex;">
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black;  margin-right:auto;" onclick="buttonColor('left','yellow');" >Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','yellow');">Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; " onclick="buttonColor('right','yellow');">Y</button>
+    </div>
+
+    <div style="height: 4%; "></div>
+    <div style="width: 100%; height: 8%; display: flex;">
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white;  margin-right:auto;" onclick="buttonColor('left','off');" >OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','off');">OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; " onclick="buttonColor('right','off');">OFF</button>
+    </div>
+
+    <div style="height: 4%; "></div>
+    <div style="width: 100%; height: 8%; display: flex;">
+    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onclick="nextColor('left');" >NEXT</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onclick="nextColor('middle');">NEXT</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onclick="nextColor('right');">NEXT</button>
+    </div>
+
+    <div style="height: 4%; "></div>
+    <div style="width: 100%; height: 8%; display: flex;">
+    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onclick="dispense();" >DISPENSE</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onclick="newRound();">REINITIALIZE</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onclick="squeakSound();">SQUEAK</button>
+    </div>
 
 
-    <button style="width: 100%; height: 200px;" onclick="sock.send('@dispense;');">Dispense</button>
+    <div style="height: 4%; "></div>
 
+    <div style="width: 100%; height: 20%; display: flex;">
+    <button style="width: 45%; height: 100%; background-color: darkgreen; color: white; margin-right: auto;" onclick="goodResult();">GOOD</button>
+    <button style="width: 45%; height: 100%; background-color: darkred; color: white; margin-legft: auto;" onclick="badResult();">FAIL</button>
+    </div>
+
+    <div style="height: 4%; "></div>
+
+    </div>
 </body>
 
 </html>

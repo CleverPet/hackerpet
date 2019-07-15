@@ -253,6 +253,8 @@ void loop()
 
     if (system_ready) 
     {
+        mgschwan_serve_webinterface();
+
         unsigned char buttons = dli->AnyButtonPressed();
         if (buttons != 0)
         {
