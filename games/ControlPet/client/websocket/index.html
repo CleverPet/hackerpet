@@ -163,13 +163,19 @@
             playAudio("right");
         }
 
-        var colors = ["white","yellow","blue"];
+        var colors = ["white","blue","yellow"];
 
         var current_color_index = [0,0,0];
         
-        function nextColor(button) {
+        function nextColor(button, color_number) {
             var button_idx = buttonToValue(button);
             current_color_index[button_idx] = (current_color_index[button_idx] + 1) % colors.length;
+
+            if (color_number !== undefined)
+            {
+                current_color_index[button_idx] = color_number;
+            }
+
             buttonColor(button_idx, colors[current_color_index[button_idx]]);
         }
 
@@ -182,23 +188,23 @@
     <div style="margin: 0; height: 100%; width; 100%; margin: 0; padding: 0;">
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-right:auto;" onclick="buttonColor('left','white');" >W</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','white');">W</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onclick="buttonColor('right','white');">W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-right:auto;" onclick="nextColor('left',0);" >W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onclick="nextColor('middle',0);">W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onclick="nextColor('right',0);">W</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-right:auto;" onclick="buttonColor('left','blue');" >B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','blue');">B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; " onclick="buttonColor('right','blue');">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-right:auto;" onclick="nextColor('left',1);" >B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; margin-right:auto;" onclick="nextColor('middle',1);">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; " onclick="nextColor('right',1);">B</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black;  margin-right:auto;" onclick="buttonColor('left','yellow');" >Y</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','yellow');">Y</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; " onclick="buttonColor('right','yellow');">Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black;  margin-right:auto;" onclick="nextColor('left',2);" >Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; margin-right:auto;" onclick="nextColor('middle',2);">Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; " onclick="nextColor('right',2);">Y</button>
     </div>
 
     <div style="height: 4%; "></div>
