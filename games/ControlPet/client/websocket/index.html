@@ -1,10 +1,10 @@
 <html>
 <head>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
     <style>
     
         button {
-            font-size: 1.5em;
+            font-size: 1em;
         }
     
     </style>
@@ -188,52 +188,52 @@
     <div style="margin: 0; height: 100%; width; 100%; margin: 0; padding: 0;">
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-right:auto;" onclick="nextColor('left',0);" >W</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onclick="nextColor('middle',0);">W</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onclick="nextColor('right',0);">W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-right:auto;" onmousedown="nextColor('left',0);" >W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle',0);">W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onmousedown="nextColor('right',0);">W</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-right:auto;" onclick="nextColor('left',1);" >B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; margin-right:auto;" onclick="nextColor('middle',1);">B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; " onclick="nextColor('right',1);">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-right:auto;" onmousedown="nextColor('left',1);" >B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle',1);">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; " onmousedown="nextColor('right',1);">B</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black;  margin-right:auto;" onclick="nextColor('left',2);" >Y</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; margin-right:auto;" onclick="nextColor('middle',2);">Y</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; " onclick="nextColor('right',2);">Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black;  margin-right:auto;" onmousedown="nextColor('left',2);" >Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle',2);">Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; " onmousedown="nextColor('right',2);">Y</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white;  margin-right:auto;" onclick="buttonColor('left','off');" >OFF</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; margin-right:auto;" onclick="buttonColor('middle','off');">OFF</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; " onclick="buttonColor('right','off');">OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onmousedown="nextColor('left');" >NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle');">NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onmousedown="nextColor('right');">NEXT COLOR</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onclick="nextColor('left');" >NEXT COLOR</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onclick="nextColor('middle');">NEXT COLOR</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onclick="nextColor('right');">NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white;  margin-right:auto;" onmousedown="buttonColor('left','off');" >OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; margin-right:auto;" onmousedown="buttonColor('middle','off');">OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; " onmousedown="buttonColor('right','off');">OFF</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onclick="dispense();" >DISPENSE</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onclick="newRound();">REINITIALIZE</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onclick="squeakSound();">SQUEAK</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onmousedown="dispense();" >DISPENSE</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onmousedown="newRound();">REINITIALIZE</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onmousedown="squeakSound();">SQUEAK</button>
     </div>
 
 
     <div style="height: 4%; "></div>
 
     <div style="width: 100%; height: 20%; display: flex;">
-    <button style="width: 45%; height: 100%; background-color: darkgreen; color: white; margin-right: auto;" onclick="goodResult();">GOOD</button>
-    <button style="width: 45%; height: 100%; background-color: darkred; color: white; margin-legft: auto;" onclick="badResult();">FAIL</button>
+    <button style="width: 45%; height: 100%; background-color: darkgreen; color: white; margin-right: auto;" onmousedown="goodResult();">GOOD</button>
+    <button style="width: 45%; height: 100%; background-color: darkred; color: white; margin-legft: auto;" onmousedown="badResult();">FAIL</button>
     </div>
 
     <div style="height: 4%; "></div>

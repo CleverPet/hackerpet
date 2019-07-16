@@ -12,7 +12,7 @@ The software on the hub receives commands over a local network connection and ex
 
 If your device supports mDNS (Avahi/Zeroconf) open the address [http://cleverpet.local](http://cleverpet.local) to access the remote control. 
 
-If mDNS is not supported you need to go directly to http://<ip address of your hub> or if on Android you may install the "BonjourBrowser" app to browse the local services and click on "Cleverpet interface" to open the remote control.
+If mDNS is not supported you need to go directly to http://<ip address of your hub> or if on Android you may install the "Bonjour Browser" app to browse the local services and click on "Cleverpet interface" to open the remote control.
 
 ### Android
 
