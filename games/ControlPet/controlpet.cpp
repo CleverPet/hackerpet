@@ -253,6 +253,7 @@ void loop()
 
     if (system_ready) 
     {
+        mgschwan_MDNS_loop();
         mgschwan_serve_webinterface();
 
         unsigned char buttons = dli->AnyButtonPressed();

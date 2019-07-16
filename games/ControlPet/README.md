@@ -8,6 +8,12 @@ The software on the hub receives commands over a local network connection and ex
 
 ## Client
 
+### Webbrowser
+
+If your device supports mDNS (Avahi/Zeroconf) you open the address [http://cleverpet.local](http://cleverpet.local) to access the remote control. 
+
+If mDNS is not supported you need to go directly to http://<ip address of your hub>
+
 ### Android
 
 After installing the APK from (clients/android) make sure your mobile is connected to the same network as the hub. If broadcast messages are not blocked the address of the hub should appear automatically in the mobile client. Otherwise the address has to be entered manually.

@@ -22,6 +22,10 @@ bool mgschwan_recvStringTCP(String &message);
 bool mgschwan_sendStringTCP(String message);
 bool mgschwan_sendString(String message);
 
+bool mgschwan_setupMDNS();
+void mgschwan_MDNS_loop();
+
+
 
 //Construct a message that will instruct the receiver to play the specified sound file
 void mgschwan_playRemoteSound (String sound, IPAddress &remote);

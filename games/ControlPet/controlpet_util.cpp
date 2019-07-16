@@ -1,8 +1,10 @@
+#include <MDNS.h>
 #include "controlpet_util.h"
 #include "WebSockets.h"
 #include "WebSocketsServer.h"
 #include "client/websocket/index_html.h"
 
+MDNS mgschwan_mdns;
 
 UDP mgschwan_Udp;
 int mgschwan_broadcastPort = 4888;
@@ -64,6 +66,44 @@ void mgschwan_websocket_loop() {
     {
         webSocket.loop();
     }
+}
+
+void mgschwan_MDNS_loop() {
+    mgschwan_mdns.processQueries();
+}
+
+bool mgschwan_setupMDNS() {
+    bool success = false;
+
+    success = mgschwan_mdns.setHostname("cleverpet");
+    Log.info("MDNS: Set hostname %d",success);
+
+    if (success) {
+      success = mgschwan_mdns.addService("tcp", "http", 80, "Web Interface");
+    } 
+
+    Log.info("MDNS: Add service %d",success);
+
+    if (success) {
+      success = mgschwan_mdns.addService("tcp", "controlpet", 4889, "Remote control");
+    }
+
+    Log.info("MDNS: Add service %d",success);
+
+
+    if (success) {
+      success = mgschwan_mdns.addService("tcp", "websocket", 4890, "WebSocket connector");
+    }
+
+    Log.info("MDNS: Add service %d",success);
+
+    if (success) {
+        success = mgschwan_mdns.begin(true);
+    }
+
+    Log.info("MDNS: Begin %d",success);
+
+    return success;
 }
 
 void mgschwan_serve_webinterface() {
@@ -134,6 +174,7 @@ void mgschwan_setupNetwork()
   server.begin();
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
+  mgschwan_setupMDNS();
 }
     
 void mgschwan_sendStringUDP(String message, IPAddress &remote) {
