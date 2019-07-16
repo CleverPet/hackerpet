@@ -79,20 +79,20 @@ bool mgschwan_setupMDNS() {
     Log.info("MDNS: Set hostname %d",success);
 
     if (success) {
-      success = mgschwan_mdns.addService("tcp", "http", 80, "Web Interface");
+      success = mgschwan_mdns.addService("tcp", "http", 80, "Cleverpet Interface");
     } 
 
     Log.info("MDNS: Add service %d",success);
 
     if (success) {
-      success = mgschwan_mdns.addService("tcp", "controlpet", 4889, "Remote control");
+      success = mgschwan_mdns.addService("tcp", "controlpet", 4889, "Cleverpet control");
     }
 
     Log.info("MDNS: Add service %d",success);
 
 
     if (success) {
-      success = mgschwan_mdns.addService("tcp", "websocket", 4890, "WebSocket connector");
+      success = mgschwan_mdns.addService("tcp", "websocket", 4890, "Cleverpet websocket");
     }
 
     Log.info("MDNS: Add service %d",success);
