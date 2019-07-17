@@ -1,10 +1,12 @@
 #include "hackerpet.h"
+#include "timezone.h"
 
 using namespace std;
 
 #include <algorithm>  // what is this used for??
 
 Logger libLog("app.hackerpet");
+Timezone timezone;
 
 /*
                             <<<                             >>>
@@ -28,6 +30,7 @@ HubInterface::HubInterface()
     _time_left_button_pressed   = 0         ;// the last time when a button was pressed
     _time_middle_button_pressed = 0         ;
     _time_right_button_pressed  = 0         ;
+    _last_timezone_request      = 0         ;// when was the last time we made a timezone request
     _packet_number              = 0         ;// packet sequence number
     _diag_btn_poll_rest_ms      = 50        ;// rest in MS between button polls
     _diag_indlight_rest_ms      = 1000      ;// rest in MS between ind light polls
@@ -55,6 +58,8 @@ bool HubInterface::Initialize(char * longFileName){
     SetDoPollIndLight(true); //start polling the indicator light
     PlayTone(0, 5, 10); // turn off sound
     SetLights(LIGHT_BTNS, 0, 0, 0);  // turn off lights
+
+    timezone.withEventName("hckrpt/timezone").begin(); // start timezone library
 
     // set challenge id for report
     const char * fileName = (strrchr(longFileName, SLASH) + 1); // remove path
@@ -1528,6 +1533,10 @@ bool HubInterface::Run(unsigned long forHowLong)
             _handle_dl_errors();
         }
     }
+
+    // check if we have a valid timezone
+    _check_timezone();
+
     return true;
 }
 
@@ -2044,6 +2053,22 @@ bool HubInterface::_create_dl_cmd_with(unsigned char token, const char* payload,
     return true;
 }
 
+// check if there's a valid timezone and request one if missing
+bool HubInterface::_check_timezone()
+{
+    // check if we recently made a timezone request
+    if (_last_timezone_request == 0 || // first request doesnt need timeout
+        (_last_timezone_request + _timezone_request_interval) < millis()){
+        // check if timezone is valid
+        if (!timezone.isValid() && !timezone.requestPending() &&
+            Particle.connected()){
+            _last_timezone_request = millis();
+                // make timezone request
+                timezone.request();
+        }
+    }
+    return true;
+}
 
 
 bool HubInterface::IsHubOutOfFood()
@@ -2108,12 +2133,14 @@ bool HubInterface::Report(String play_start_time, String player, uint32_t level,
 
     if ((string_length >= 0) and (string_length < sizeof(report))){
         // succesfully constructed report string
-        if (Particle.connected()) {
+        if (Particle.connected() && Time.isValid()) {
             // connected to particle cloud, send report
-            return Particle.publish("report", report, 60, PRIVATE);
+            return Particle.publish("hckrpt/report", report, 60, PRIVATE);
         }
         else {
-            // not connected to particle cloud
+            // not connected to particle cloud or time not synced
+            // Try to sync time
+            Particle.syncTime();
             return false;
         };
     }
@@ -2176,12 +2203,14 @@ bool HubInterface::Report(String play_start_time, String player, uint32_t level,
 
     if ((string_length >= 0) and (string_length < sizeof(report))){
         // succesfully constructed report string
-        if (Particle.connected()) {
+        if (Particle.connected() && Time.isValid()) {
             // connected to particle cloud, send report
-            return Particle.publish("report", report, 60, PRIVATE);
+            return Particle.publish("hckrpt/report", report, 60, PRIVATE);
         }
         else {
-            // not connected to particle cloud
+            // not connected to particle cloud or time not synced
+            // Try to sync time
+            Particle.syncTime();
             return false;
         };
     }
