@@ -40,11 +40,11 @@ Copy the following code block into the textbox and don't forget to **replace `<A
 	    "rejectUnauthorized": true,
 	    "responseTemplate": "",
 	    "json": {
-    	    "event": "{{{PARTICLE_EVENT_NAME}}}",
-    	    "data": "{{{PARTICLE_EVENT_VALUE}}}",
-    	    "coreid": "{{{PARTICLE_DEVICE_ID}}}",
-    	    "published_at": "{{{PARTICLE_PUBLISHED_AT}}}"
-    	}
+	        "event": "{{{PARTICLE_EVENT_NAME}}}",
+	        "data": "{{{PARTICLE_EVENT_VALUE}}}",
+	        "coreid": "{{{PARTICLE_DEVICE_ID}}}",
+	        "published_at": "{{{PARTICLE_PUBLISHED_AT}}}"
+	    }
 	}
 	```
 	Click **Create Webhook**.
