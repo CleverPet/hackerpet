@@ -39,7 +39,7 @@ Copy the following code block into the textbox and don't forget to **replace `<A
 	    "noDefaults": true,
 	    "rejectUnauthorized": true,
 	    "responseTemplate": "",
-    	"json": {
+	    "json": {
     	    "event": "{{{PARTICLE_EVENT_NAME}}}",
     	    "data": "{{{PARTICLE_EVENT_VALUE}}}",
     	    "coreid": "{{{PARTICLE_DEVICE_ID}}}",
