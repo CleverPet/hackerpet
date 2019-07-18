@@ -32,8 +32,8 @@ Copy the following code block into the textbox and don't forget to **replace `<A
 	```javascript
 	{
 	    "event": "hckrpt",
-	    "responseTopic": "hook-response/hckrpt/{{{PARTICLE_DEVICE_ID}}}",
-	    "errorResponseTopic": "hook-error/hckrpt/{{{PARTICLE_DEVICE_ID}}}",
+	    "responseTopic": "hook-response/{{{PARTICLE_EVENT_NAME}}}/{{PARTICLE_DEVICE_ID}}",
+	    "errorResponseTopic": "hook-error/{{{PARTICLE_EVENT_NAME}}}/{{{PARTICLE_DEVICE_ID}}}",
 	    "url": "https://api.hackerpet.com/v1/webhook?sheet_id=<ADD_YOUR_SHEET_ID_HERE>",
 	    "requestType": "POST",
 	    "noDefaults": true,
