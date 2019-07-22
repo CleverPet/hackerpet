@@ -10,6 +10,16 @@
     </style>
     <script>
         var sock;
+        var event_source = "";
+
+        function correctSource(source) {
+            if (event_source === "")
+            {
+                event_source = source;
+            }
+            return event_source === source;
+        }
+
 
         function onMessage(evt) {
             console.log("Message received: " + evt.data);
@@ -188,52 +198,64 @@
     <div style="margin: 0; height: 100%; width; 100%; margin: 0; padding: 0;">
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-right:auto;" onmousedown="nextColor('left',0);" >W</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle',0);">W</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onmousedown="nextColor('right',0);">W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('left',0);" ontouchstart="correctSource('touch') && nextColor('left',0);" >W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('middle',0);" ontouchstart="correctSource('touch') && nextColor('middle',0);">W</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: white; color: black; margin-left: auto; " onmousedown="correctSource('mouse') && nextColor('right',0);" ontouchstart="correctSource('touch') && nextColor('right',0);">W</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-right:auto;" onmousedown="nextColor('left',1);" >B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle',1);">B</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; " onmousedown="nextColor('right',1);">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('left',1);" ontouchstart="correctSource('touch') && nextColor('left',1);" >B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('middle',1);" ontouchstart="correctSource('touch') && nextColor('middle',1);">B</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: blue; color: white; margin-left: auto; " onmousedown="correctSource('mouse') && nextColor('right',1);" ontouchstart="correctSource('touch') && nextColor('right',1);">B</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black;  margin-right:auto;" onmousedown="nextColor('left',2);" >Y</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle',2);">Y</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; " onmousedown="nextColor('right',2);">Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black;  margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('left',2);" ontouchstart="correctSource('touch') && nextColor('left',2);" >Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('middle',2);" ontouchstart="correctSource('touch') && nextColor('middle',2);">Y</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: yellow; color: black; margin-left: auto; " onmousedown="correctSource('mouse') && nextColor('right',2);" ontouchstart="correctSource('touch') && nextColor('right',2);">Y</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onmousedown="nextColor('left');" >NEXT COLOR</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onmousedown="nextColor('middle');">NEXT COLOR</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onmousedown="nextColor('right');">NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('left');" ontouchstart="correctSource('touch') && nextColor('left');" >NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onmousedown="correctSource('mouse') && nextColor('middle');" ontouchstart="correctSource('touch') && nextColor('middle');">NEXT COLOR</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onmousedown="correctSource('mouse') && nextColor('right');" ontouchstart="correctSource('touch') && nextColor('right');">NEXT COLOR</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white;  margin-right:auto;" onmousedown="buttonColor('left','off');" >OFF</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; margin-right:auto;" onmousedown="buttonColor('middle','off');">OFF</button>
-    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; " onmousedown="buttonColor('right','off');">OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white;  margin-right:auto;" onmousedown="correctSource('mouse') && buttonColor('left','off');" ontouchstart="correctSource('touch') && buttonColor('left','off');">OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; margin-right:auto;" onmousedown="correctSource('mouse') && buttonColor('middle','off');" ontouchstart="correctSource('touch') && buttonColor('middle','off');">OFF</button>
+    <button style="width: 30%; min-width: 40px; height: 100%; background-color: darkgray; color: white; margin-left: auto; " onmousedown="correctSource('mouse') && buttonColor('right','off');" ontouchstart="correctSource('touch') && buttonColor('right','off');">OFF</button>
     </div>
 
     <div style="height: 4%; "></div>
     <div style="width: 100%; height: 8%; display: flex;">
-    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onmousedown="dispense();" >DISPENSE</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onmousedown="newRound();">REINITIALIZE</button>
-    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onmousedown="squeakSound();">SQUEAK</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;   margin-right:auto;" onmousedown="correctSource('mouse') && dispense();" ontouchstart="correctSource('touch') && dispense();" >DISPENSE</button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; margin-right:auto;" onmousedown="correctSource('mouse') && newRound();" ontouchstart="correctSource('touch') && newRound();">       
+            <img style="height: 50%;" src='data:image/svg+xml;base64,PHN2ZyBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHBhdGggZD0iTTAgMGg1MTJ2NTEySDB6IiBmaWxsPSJ0cmFuc3BhcmVudCIgZmlsbC1vcGFjaXR5PSIwIj48L3BhdGg+PGcgY2xhc3M9IiIgc3R5bGU9InRvdWNoLWFjdGlvbjogbm9uZTsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsMCkiPjxwYXRoIGQ9Ik0yNjMuMDkgNTBjLTExLjg4Mi0uMDA3LTIzLjg3NSAxLjAxOC0zNS44NTcgMy4xM0MxNDIuMDI2IDY4LjE1NiA3NS4xNTYgMTM1LjAyNiA2MC4xMyAyMjAuMjMzIDQ1LjEwOCAzMDUuNDQgODUuMDc1IDM5MS4xNSAxNjAuMDA1IDQzNC40MWMzMi43ODIgMTguOTI3IDY5LjI1NCAyNy45OTYgMTA1LjQ2MyAyNy41NTMgNDYuNTU1LS41NyA5Mi42NzUtMTYuODY1IDEyOS45NTctNDguMTVsLTMwLjg1NS0zNi43NjhjLTUwLjk1IDQyLjc1LTEyMi45NjggNDkuMDUtMTgwLjU2NiAxNS43OTctNTcuNTk3LTMzLjI1NC04OC4xNTItOTguNzc3LTc2LjYwMy0xNjQuMjc0IDExLjU1LTY1LjQ5NyA2Mi42NzItMTE2LjYyIDEyOC4xNy0xMjguMTY4IDUxLjY1Ni05LjEwOCAxMDMuMzIzIDcuOTggMTM5LjE3IDQzLjg2MkwzMjcgMTkyaDEyOFY2NGwtNDYuMzQgNDYuMzQyQzM3MC4yNDIgNzEuOTYyIDMxNy44MyA1MC4wMyAyNjMuMDkgNTB6IiBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjEiPjwvcGF0aD48L2c+PC9zdmc+'>
+            <div>REINITIALIZE</div>
+    </button>
+    <button style="width: 30%; min-width: 40px; height: 100%;  margin-left: auto; " onmousedown="correctSource('mouse') && squeakSound();" ontouchstart="correctSource('touch') && squeakSound();">
+        <img style="height: 50%;" src='data:image/svg+xml;base64,PHN2ZyBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHBhdGggZD0iTTAgMGg1MTJ2NTEySDB6IiBmaWxsPSJ0cmFuc3BhcmVudCIgZmlsbC1vcGFjaXR5PSIwIj48L3BhdGg+PGcgY2xhc3M9IiIgc3R5bGU9InRvdWNoLWFjdGlvbjogbm9uZTsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsMCkiPjxwYXRoIGQ9Ik0yNzUuNSA5NmwtOTYgOTZoLTk2djEyOGg5Nmw5NiA5NlY5NnptNTEuNDYgMjcuNjY4bC00LjY2IDE3LjM4N2M1Mi4wNjYgMTMuOTUgODguMiA2MS4wNCA4OC4yIDExNC45NDUgMCA1My45MDQtMzYuMTM0IDEwMC45OTQtODguMiAxMTQuOTQ1bDQuNjYgMTcuMzg3QzM4Ni44MSAzNzIuMjk1IDQyOC41IDMxNy45NjIgNDI4LjUgMjU2YzAtNjEuOTYzLTQxLjY5LTExNi4yOTUtMTAxLjU0LTEzMi4zMzJ6bS0xMi40MjUgNDYuMzY1bC00LjY1OCAxNy4zODdDMzQwLjk2IDE5NS43NDggMzYyLjUgMjIzLjgyMiAzNjIuNSAyNTZzLTIxLjU0IDYwLjI1Mi01Mi42MjMgNjguNThsNC42NTggMTcuMzg3QzM1My40MDIgMzMxLjU1MiAzODAuNSAyOTYuMjM3IDM4MC41IDI1NmMwLTQwLjIzOC0yNy4wOTgtNzUuNTUyLTY1Ljk2NS04NS45Njd6bS0xMi40MjQgNDYuMzYzbC00LjY1NyAxNy4zODdDMzA3LjU1IDIzNi40OSAzMTQuNSAyNDUuNTQ3IDMxNC41IDI1NnMtNi45NSAxOS41MS0xNy4wNDcgMjIuMjE3bDQuNjU4IDE3LjM4N2MxNy44ODQtNC43OTIgMzAuMzktMjEuMDkgMzAuMzktMzkuNjA0IDAtMTguNTEzLTEyLjUwNi0zNC44MTItMzAuMzktMzkuNjA0eiIgZmlsbD0iIzAwMDAwMCIgZmlsbC1vcGFjaXR5PSIxIj48L3BhdGg+PC9nPjwvc3ZnPg=='>
+        <div>SQUEAK</div>
+    </button>
     </div>
 
 
-    <div style="height: 4%; "></div>
+    <div style="height: 4%; "></div>    
 
     <div style="width: 100%; height: 20%; display: flex;">
-    <button style="width: 45%; height: 100%; background-color: darkgreen; color: white; margin-right: auto;" onmousedown="goodResult();">GOOD</button>
-    <button style="width: 45%; height: 100%; background-color: darkred; color: white; margin-legft: auto;" onmousedown="badResult();">FAIL</button>
+    <button style="width: 45%; height: 100%; background-color: darkgreen; color: white; margin-right: auto;" onmousedown="correctSource('mouse') && goodResult();" ontouchstart="correctSource('touch') && goodResult();">
+        <img style="height: 50%;" src='data:image/svg+xml;base64,PHN2ZyBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHBhdGggZD0iTTAgMGg1MTJ2NTEySDB6IiBmaWxsPSJ0cmFuc3BhcmVudCIgZmlsbC1vcGFjaXR5PSIwIj48L3BhdGg+PGcgY2xhc3M9IiIgc3R5bGU9InRvdWNoLWFjdGlvbjogbm9uZTsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsMCkiPjxwYXRoIGQ9Ik0yNTYgMTZDMTIzLjUgMTYgMTYgMTIzLjUgMTYgMjU2YzAgMTMyLjYgMTA3LjUgMjQwIDI0MCAyNDAgMTMyLjYgMCAyNDAtMTA3LjQgMjQwLTI0MFMzODguNiAxNiAyNTYgMTZ6bTAgNjBjOTkuNCAwIDE4MCA4MC42IDE4MCAxODBzLTgwLjYgMTgwLTE4MCAxODBTNzYgMzU1LjQgNzYgMjU2IDE1Ni42IDc2IDI1NiA3NnptOTEuMyA2NC4yYy02LjUgMC0xMi41IDIuNC0xNi44IDguMi01MiA3MC4xLTY5IDk2LjUtMTA2IDE2OS44LTguNC0xMS4xLTY1LjYtNzIuNC05My45LTk0LjEtMTQuMi0xMC45LTQxLjMgMjcuMi0zMS42IDM3LjFDMTQyLjYgMzA2LjEgMjIwLjEgNDA2IDIzMi43IDQwNWMyMS40LTEuNyA3NS4xLTEzNi44IDE0OC44LTIzMy43IDgtMTAuNC0xNS0zMS4zLTM0LjItMzEuMXoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PC9wYXRoPjwvZz48L3N2Zz4=' >
+        <p>GOOD</p>
+    </button>
+    <button style="width: 45%; height: 100%; background-color: darkred; color: white; margin-legft: auto;" onmousedown="correctSource('mouse') && badResult();" ontouchstart="correctSource('touch') && badResult();">
+        <img style="height: 50%;" src='data:image/svg+xml;base64,PHN2ZyBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHBhdGggZD0iTTAgMGg1MTJ2NTEySDB6IiBmaWxsPSJ0cmFuc3BhcmVudCIgZmlsbC1vcGFjaXR5PSIwIj48L3BhdGg+PGcgY2xhc3M9IiIgc3R5bGU9InRvdWNoLWFjdGlvbjogbm9uZTsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsMCkiPjxwYXRoIGQ9Ik0yNTYgMTZDMTIzLjQ1IDE2IDE2IDEyMy40NSAxNiAyNTZzMTA3LjQ1IDI0MCAyNDAgMjQwIDI0MC0xMDcuNDUgMjQwLTI0MFMzODguNTUgMTYgMjU2IDE2em0wIDYwYzk5LjQxIDAgMTgwIDgwLjU5IDE4MCAxODBzLTgwLjU5IDE4MC0xODAgMTgwUzc2IDM1NS40MSA3NiAyNTYgMTU2LjU5IDc2IDI1NiA3NnptLTgwLjYyNSA2MGMtLjk3LS4wMDUtMi4wMDYuMTEyLTMuMDYzLjMxM3YtLjAzMmMtMTguMjk3IDMuNDM2LTQ1LjI2NCAzNC43NDMtMzMuMzc1IDQ2LjYyNmw3My4xNTcgNzMuMTI1LTczLjE1NiA3My4xMjZjLTE0LjYzIDE0LjYyNSAyOS4yNzUgNTguNTM0IDQzLjkwNiA0My45MDZMMjU2IDI5OS45MDZsNzMuMTU2IDczLjE1NmMxNC42MyAxNC42MjggNTguNTM3LTI5LjI4IDQzLjkwNi00My45MDZsLTczLjE1Ni03My4xMjUgNzMuMTU2LTczLjEyNGMxNC42My0xNC42MjUtMjkuMjc1LTU4LjUtNDMuOTA2LTQzLjg3NUwyNTYgMjEyLjE1N2wtNzMuMTU2LTczLjEyNWMtMi4wNi0yLjA0Ni00LjU2LTMuMDE1LTcuNDctMy4wM3oiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PC9wYXRoPjwvZz48L3N2Zz4=' >
+        <p>FAIL</p>
+    </button>
     </div>
 
     <div style="height: 4%; "></div>
