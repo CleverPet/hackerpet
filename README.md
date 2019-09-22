@@ -56,7 +56,7 @@ $ particle webhook create docs/particle_webhook.json
 
 ### What now?
 
-The fun stuff is all in the examples folder -- if your dog or cat already understands how the lights and touchpads work, and you're immediately interested in a new game for your pup to try, try the WhackAMole game: by playing with the speed that the lights change you can make the game easier or harder! Note that many of the examples won't work unless there's something that looks like a kibble in the silver food tray. Anything dark that's between the size of a MicroSD card and an almond should do the trick.
+The fun stuff is all in the examples folder -- if your dog or cat already understands how the lights and touchpads work, and you're immediately interested in a new game for your pup to try, head over to the [hackerpet-games repo](https://github.com/cleverpet/hackerpet-games) and try the WhackAMole game: by playing with the speed that the lights change you can make the game easier or harder! Note that many of the examples won't work unless there's something that looks like a kibble in the silver food tray. Anything dark that's between the size of a MicroSD card and an almond should do the trick.
 
 ## Definitions
 
