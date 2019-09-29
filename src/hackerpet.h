@@ -89,6 +89,22 @@ __DATE__[4], __DATE__[5], '\0' }
       }                                            \
     } while (0)
 
+/* Yield Wait For with timeout
+ *
+ * Waits for the specified number of milliseconds (timeout) or a condition while
+ * yielding whenever the condition is not true. Passes the ret parameter
+ * whenever yielding.
+ */
+#define yield_wait_for_with_timeout(condition, timeout_time_in_milliseconds, ret)\
+  do {                                                                         \
+    static unsigned long t1 = 0;                                               \
+    t1 = millis();                                                             \
+    while (!(condition) && (millis() - t1)                                     \
+           < timeout_time_in_milliseconds) {                                   \
+      yield(ret);                                                              \
+    }                                                                          \
+  } while (0)
+
 /* Yield Sleep
  *
  * Waits for the specified number of microseconds, yielding while waiting.
