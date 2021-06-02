@@ -67,7 +67,7 @@ bool HubInterface::Initialize(char * longFileName){
         fileName = longFileName; // use long version
     sprintf(challenge_id, "%s#%sT%s", fileName , __NICEDATE__, __TIME__ );
 
-    return 1;
+    return true;
 }
 
 unsigned char HubInterface::_milliseconds_to_deciseconds_for_DL_T(unsigned long desiredMilliseconds){
@@ -607,6 +607,7 @@ bool HubInterface::SetDoPollIndLight(bool indLightPollingEnable) {
 bool HubInterface::_poll_indlight()
 {
     _apply_desired_indicator_light(IndicatorState);
+    return true;
 }
 
 bool HubInterface::_apply_desired_indicator_light(unsigned char ilstate)
@@ -988,6 +989,7 @@ bool HubInterface::GetDLInitValues()
     GetConfigValue(8);
     GetConfigValue(18);
     GetConfigValue(20);
+    return true;
 }
 
 bool HubInterface::GetConfigValue(unsigned char configID)
@@ -1453,6 +1455,7 @@ bool HubInterface::_process_config_init()
             libLog.error("dli::_process_config_init Error! Invalid state!");
             break;
     }
+    return true;
 }
 
 bool HubInterface::UpdateButtonAudioEnabled()
