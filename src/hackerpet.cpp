@@ -687,6 +687,7 @@ int HubInterface::GetButtonVal(unsigned char whichButton){
     if (whichButton == BUTTON_RIGHT){
         return ((int)_right_baseline) - ((int)_right_read);
     }
+    return -1;
 }
 
 /*
