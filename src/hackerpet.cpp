@@ -3,7 +3,7 @@
 
 using namespace std;
 
-#include <algorithm>  // what is this used for??
+#include <algorithm>  // random_shuffle
 
 Logger libLog("app.hackerpet");
 Timezone timezone;
@@ -2083,6 +2083,18 @@ bool HubInterface::IsHubOutOfFood()
 bool HubInterface::IsSingulatorError()
 {
     return _singulator_error;
+}
+
+bool HubInterface::IsPlatterError()
+{
+    // returns true if platter error; if IsPlatterStuck is false, hub is trying to clear by retrying platter movement
+    return _platter_error;
+}   
+
+bool HubInterface::IsPlatterStuck()
+{
+    // returns true if platter is stuck (IsPlatterError was true and retried N times)
+    return _platter_stuck;
 }
 
 /*

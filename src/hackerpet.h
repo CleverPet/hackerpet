@@ -325,6 +325,12 @@ public:
     bool IsSingulatorError();
     // returns true if singulator error, for example if singulator jammed
 
+    bool IsPlatterError();
+    // returns true if platter error; if IsPlatterStuck is false, hub is trying to clear by retrying platter movement
+
+    bool IsPlatterStuck();
+    // returns true if platter is stuck (IsPlatterError was true and retried N times)
+
     bool Report(String play_start_time, String player, uint32_t level, String result, uint32_t duration, bool foodtreat_presented, bool foodtreat_eaten);
     // sends a report message with standard fields to the particle cloud. Returns true if successful.
 
