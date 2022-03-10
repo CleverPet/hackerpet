@@ -951,6 +951,46 @@ void HubInterface::_update_cap_reset(int left, int middle, int right) {
     return;
 }
 
+bool HubInterface::SetFoodTreatDetectThresh(int foodtreat_detect_threshold)
+{
+    // this function optionally overrides the default value of foodtreat_detect_threshold
+    // if called before config init is done, it will not set the config value, instead allowing normal init routine to do it
+    // if called after config init is done, it will set the new value and Reset the DI.
+
+    // TODO -> how to interface this with get/set dl init values? 
+    // we don't want it to reset all the values every time
+
+    // answer: it will no longer be included as part of dl init value check? or -> read from eeprom instead of the static int that's now stored
+    // i.e. FOODTREAT_DETECT_THRESHOLD should be passed in after eeprom read from config class, instead of static int in this class
+
+    // this function is used for the case where user actually changes it (after earlier init from eeprom)
+
+    // if this is being called BEFORE the DI config has occured; don't do SetConfig and reset right now!
+
+    FOODTREAT_DETECT_THRESHOLD = foodtreat_detect_threshold;
+
+    if (_config_init_state == CONFIG_INIT_DONE)
+    {
+        // do this only if we've finished the init config (called during Run())
+        // so if called at init, will only set threshold and normal init process will do the rest
+        // otherwise, we set and resetDI below
+
+        SetConfigValue(20, foodtreat_detect_threshold);   
+        ResetDI();
+    }
+    libLog("HubInterface::SetFoodTreatDetectThresh finished");
+
+    return true;
+}
+
+
+int HubInterface::GetFoodTreatDetectThresh()
+{
+    // not sure if / how we need this function
+    return FOODTREAT_DETECT_THRESHOLD;
+}
+
+
 bool HubInterface::SetDLInitValues(int left, int middle, int right, int tray_speed, int tray_current_threshold, int foodtreat_tx_power_level, int foodtreat_detect_threshold)
 {
 
