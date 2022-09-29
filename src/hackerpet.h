@@ -231,6 +231,10 @@ public:
     // retract the tray
     // for use with PresentFoodtreat(0)
 
+    bool SetFoodTreatDetectThresh(int foodtreat_detect_threshold);
+
+    int GetFoodTreatDetectThresh();
+
     bool SetConfigValue(unsigned char configID, int value);
     // sets config value on DL board (see Run function implementation for use)
 
@@ -547,6 +551,8 @@ private:
     unsigned long _csf_last_DI_reset_millis = 0;
     unsigned long _csf_DI_reset_interval = 500000;
 
+    int FOODTREAT_DETECT_THRESHOLD = 60                          ; // 60 (default), 40 (addresses empty dish issues)
+
 //PUBLIC STATIC VARIABLES
 public:
     //PresentAndCheckFoodtreat state machine
@@ -590,7 +596,6 @@ public:
     static const int TRAY_SPEED       = 14                                ;
     static const int TRAY_CURRENT_THRESHOLD = 200                         ;
     static const int FOODTREAT_TX_POWER_LEVEL = 0                              ; //0 = low (default), 1 = medium, 2 = high
-    static const int FOODTREAT_DETECT_THRESHOLD = 60                          ; // 60 (default), 40 (addresses empty dish issues)
 
     // these are constants in the dl firmware:
     static const int PLATTER_MOTOR_MAX_DUTY_CYCLE = 100;
